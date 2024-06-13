@@ -13,5 +13,6 @@ import { AppComponent } from './app.component';
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideClientHydration(), provideAnimationsAsync()],
   bootstrap: [AppComponent],
+  // test
 })
 export class AppModule {}
