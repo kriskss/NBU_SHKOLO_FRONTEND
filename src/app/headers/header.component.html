@@ -1,0 +1,12 @@
+<mat-toolbar color="primary" class="header-toolbar">
+  <div class="header-content">
+    <div class="school-name">{{ schoolName }}</div>
+    <div class="student-name">{{ studentName }}</div>
+  </div>
+  <button mat-button class="profile-button" (click)="onProfileClicked()">
+    Profile
+  </button>
+  <button mat-button class="logout-button" (click)="onLogOutClicked()">
+    Log out
+  </button>
+</mat-toolbar>

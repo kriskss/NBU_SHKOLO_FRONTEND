@@ -1,0 +1,24 @@
+.header-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logout-button,
+.profile-button {
+  margin-right: 16px;
+}
+
+.header-content {
+  text-align: center;
+  flex: 1;
+}
+
+.school-name {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.student-name {
+  font-size: 1em;
+}
