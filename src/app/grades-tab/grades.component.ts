@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { StudentService } from '../services/student.service';
+import { firstValueFrom } from 'rxjs';
 
 export interface Grade {
   subject: string;
   grade: string;
 }
-
-const GRADES_DATA: Grade[] = [
-  { subject: 'Math', grade: '3' },
-  { subject: 'History', grade: '4' },
-  { subject: 'Science', grade: '6' },
-  // Add more subjects and grades as needed
-];
 
 @Component({
   selector: 'app-grades',
@@ -19,9 +14,40 @@ const GRADES_DATA: Grade[] = [
 })
 export class GradesComponent implements OnInit {
   displayedColumns: string[] = ['subject', 'grade'];
-  grades = GRADES_DATA;
+  grades: Grade[] = [];
 
-  constructor() {}
+  constructor(private studentService: StudentService) {}
 
-  ngOnInit(): void {}
+  async ngOnInit(): Promise<void> {
+    await this.fetchStudentGrades();
+  }
+
+  async fetchStudentGrades(): Promise<void> {
+    const userInfo = localStorage.getItem('userInfo');
+    if (!userInfo) {
+      console.error('No user info found in localStorage');
+      return;
+    }
+
+    const userId = JSON.parse(userInfo).id;
+
+    try {
+      // Use firstValueFrom inside the component
+      const studentId = await firstValueFrom(
+        this.studentService.getStudentIdByUserId(userId)
+      );
+      console.log(studentId);
+      if (studentId) {
+        debugger;
+        this.grades = await firstValueFrom(
+          this.studentService.getStudentGrades(studentId)
+        );
+        console.log(this.grades);
+      } else {
+        console.error('Student ID not found');
+      }
+    } catch (error) {
+      console.error('Error fetching grades:', error);
+    }
+  }
 }

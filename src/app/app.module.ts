@@ -14,7 +14,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { HttpClientModule } from '@angular/common/http';
+import {
+  HTTP_INTERCEPTORS,
+  HttpClientModule,
+  provideHttpClient,
+  withInterceptorsFromDi,
+} from '@angular/common/http';
 import { HeaderComponent } from './headers/header.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TabsHeaderComponent } from './headers/tabsHeader/tabsHeader.component';
@@ -23,6 +28,9 @@ import { GradesComponent } from './grades-tab/grades.component';
 import { MatTableModule } from '@angular/material/table';
 import { AbsenceComponent } from './absence-tab/absence.component';
 import { YesNoPipe } from './pipes/yesNo.pipe';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { withFetch } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -34,10 +42,12 @@ import { YesNoPipe } from './pipes/yesNo.pipe';
     AbsenceComponent,
     YesNoPipe,
   ],
+  bootstrap: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    HttpClientModule, // Add HttpClientModule here
     MatPseudoCheckboxModule,
     MatCardModule,
     FormsModule,
@@ -46,12 +56,18 @@ import { YesNoPipe } from './pipes/yesNo.pipe';
     ReactiveFormsModule,
     MatInputModule,
     MatButtonModule,
-    HttpClientModule,
     MatToolbarModule,
     MatTabsModule,
     MatTableModule,
+    MatCardModule,
+    ReactiveFormsModule,
+    MatGridListModule,
   ],
-  providers: [provideClientHydration()],
-  bootstrap: [AppComponent],
+  providers: [
+    provideClientHydration(),
+    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withFetch()),
+    // { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
 })
 export class AppModule {}

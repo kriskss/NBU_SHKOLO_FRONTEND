@@ -1,7 +1,7 @@
-<mat-toolbar color="primary" class="header-toolbar">
+<mat-toolbar *ngIf="isAuthenticated()" color="primary" class="header-toolbar">
   <div class="header-content">
     <div class="school-name">{{ schoolName }}</div>
-    <div class="student-name">{{ studentName }}</div>
+    <div class="student-name">{{ user?.firstName }} {{ user?.lastName }}</div>
   </div>
   <button mat-button class="profile-button" (click)="onProfileClicked()">
     Profile

@@ -1,6 +1,12 @@
-<mat-tab-group class="tabs-container" (selectedTabChange)="onTabChange($event)">
+<mat-tab-group
+  *ngIf="isAuthenticated()"
+  class="tabs-container"
+  [(selectedIndex)]="selectedTab"
+  (selectedTabChange)="onTabChange($event)"
+>
   <mat-tab label="Grades" routerLink="/grades"></mat-tab>
   <mat-tab label="Absence" routerLink="/absence"></mat-tab>
   <mat-tab label="School Schedule" routerLink="/schedule"></mat-tab>
 </mat-tab-group>
+
 <router-outlet></router-outlet>

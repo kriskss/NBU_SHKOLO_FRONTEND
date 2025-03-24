@@ -1,4 +1,54 @@
 <div
+  class="d-flex justify-content-center align-items-center"
+  style="height: 100vh; margin: 0"
+>
+  <div class="card bg-success" style="width: 100%; max-width: 400px">
+    <div
+      class="card-body d-flex justify-content-center align-items-center"
+      style="height: 100%"
+    >
+      <mat-card class="login-card" style="width: 100%; padding: 20px">
+        <h2 class="text-center mb-4">Login</h2>
+        <form (ngSubmit)="onLogin()">
+          <div class="mb-3">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Username</mat-label>
+              <input
+                matInput
+                id="username"
+                [(ngModel)]="username"
+                name="username"
+                required
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="mb-3">
+            <mat-form-field appearance="fill" class="w-100">
+              <mat-label>Password</mat-label>
+              <input
+                matInput
+                type="password"
+                id="password"
+                [(ngModel)]="password"
+                name="password"
+                required
+              />
+            </mat-form-field>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button mat-raised-button color="primary" type="submit">
+              Login
+            </button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- <div
   class="row justify-content-center"
   style="font-size: 18px; margin-top: 15%"
 >
@@ -67,4 +117,4 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
