@@ -5,6 +5,9 @@ import { firstValueFrom } from 'rxjs';
 export interface Grade {
   subject: string;
   grade: string;
+  type: string;
+  term: string;
+  date: Date;
 }
 
 @Component({
@@ -13,7 +16,7 @@ export interface Grade {
   styleUrls: ['./grades.component.scss'],
 })
 export class GradesComponent implements OnInit {
-  displayedColumns: string[] = ['subject', 'grade'];
+  displayedColumns: string[] = ['subject', 'type', 'term', 'grade', 'date'];
   grades: Grade[] = [];
 
   constructor(private studentService: StudentService) {}
@@ -32,13 +35,11 @@ export class GradesComponent implements OnInit {
     const userId = JSON.parse(userInfo).id;
 
     try {
-      // Use firstValueFrom inside the component
       const studentId = await firstValueFrom(
         this.studentService.getStudentIdByUserId(userId)
       );
       console.log(studentId);
       if (studentId) {
-        debugger;
         this.grades = await firstValueFrom(
           this.studentService.getStudentGrades(studentId)
         );
@@ -48,6 +49,18 @@ export class GradesComponent implements OnInit {
       }
     } catch (error) {
       console.error('Error fetching grades:', error);
+    }
+  }
+
+  getGradeClass(grade: number): string {
+    if (grade >= 5.5) {
+      return 'excellent';
+    } else if (grade >= 4.0) {
+      return 'good';
+    } else if (grade >= 3.0) {
+      return 'average';
+    } else {
+      return 'bad';
     }
   }
 }

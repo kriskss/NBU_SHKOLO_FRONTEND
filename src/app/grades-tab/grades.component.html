@@ -4,9 +4,30 @@
     <td mat-cell *matCellDef="let grade">{{ grade.subject.title }}</td>
   </ng-container>
 
+  <ng-container matColumnDef="type">
+    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <td mat-cell *matCellDef="let grade">{{ grade.gradeType }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="term">
+    <th mat-header-cell *matHeaderCellDef>Term</th>
+    <td mat-cell *matCellDef="let grade">{{ grade.term.termType }}</td>
+  </ng-container>
+
   <ng-container matColumnDef="grade">
     <th mat-header-cell *matHeaderCellDef>Grade</th>
-    <td mat-cell *matCellDef="let grade">{{ grade.grade }}</td>
+    <td mat-cell *matCellDef="let grade">
+      <div class="grade-circle" [ngClass]="getGradeClass(grade.grade)">
+        {{ grade.grade }}
+      </div>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="date">
+    <th mat-header-cell *matHeaderCellDef>Date</th>
+    <td mat-cell *matCellDef="let grade">
+      {{ grade.dateOfGrade | date : "dd/MM/yyyy" }}
+    </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
