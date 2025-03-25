@@ -45,13 +45,13 @@ export class StudentService {
 
   getStudentIdByUserId(userId: number): Observable<number> {
     const token = localStorage.getItem('authToken');
-    console.log(token);
+    // console.log(token);
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: token ? `Bearer ${token}` : '',
       }),
     };
-    console.log(httpOptions);
+    // console.log(httpOptions);
 
     return this.http.get<number>(
       `${this.baseUrl}/getStudentId/${userId}`,

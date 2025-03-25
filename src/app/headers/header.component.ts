@@ -26,7 +26,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.user = this.userService.getCurrentUser();
-    console.log(this.user);
+    // console.log(this.user);
     if (isPlatformBrowser(this.platformId)) {
       const storedUser = localStorage.getItem('userInfo');
       if (storedUser) {

@@ -38,12 +38,12 @@ export class GradesComponent implements OnInit {
       const studentId = await firstValueFrom(
         this.studentService.getStudentIdByUserId(userId)
       );
-      console.log(studentId);
+      // console.log(studentId);
       if (studentId) {
         this.grades = await firstValueFrom(
           this.studentService.getStudentGrades(studentId)
         );
-        console.log(this.grades);
+        // console.log(this.grades);
       } else {
         console.error('Student ID not found');
       }
