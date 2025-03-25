@@ -31,6 +31,7 @@ import { YesNoPipe } from './pipes/yesNo.pipe';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { withFetch } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ProfileTabComponent } from './profile-tab/profile-tab.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
     GradesComponent,
     AbsenceComponent,
     YesNoPipe,
+    ProfileTabComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

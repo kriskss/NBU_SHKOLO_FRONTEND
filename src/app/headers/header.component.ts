@@ -5,6 +5,7 @@ import { AuthService } from '../services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -21,7 +22,8 @@ export class HeaderComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private studentService: StudentService,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -46,6 +48,6 @@ export class HeaderComponent implements OnInit {
   }
 
   onProfileClicked(): void {
-    // Navigate to profile page or perform other actions
+    this.router.navigate(['/profile']);
   }
 }
