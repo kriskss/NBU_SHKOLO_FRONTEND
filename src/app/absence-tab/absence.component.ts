@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
-export interface Absence {
-  date: Date;
-  excused: boolean;
-  subject: string;
-}
-
-const ABSENCE_DATA: Absence[] = [
-  { date: new Date('2023-01-15'), excused: true, subject: 'English' },
-  { date: new Date('2023-02-10'), excused: true, subject: 'Bio' },
-  { date: new Date('2023-03-22'), excused: false, subject: 'Math' },
-];
+import { AbsenceService, AbsenceDTO } from '../services/absence.service';
+import { StudentService } from '../services/student.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-absence',
@@ -18,10 +9,46 @@ const ABSENCE_DATA: Absence[] = [
   styleUrls: ['./absence.component.scss'],
 })
 export class AbsenceComponent implements OnInit {
-  displayedColumns: string[] = ['subject', 'date', 'excused'];
-  absences = ABSENCE_DATA;
+  displayedColumns: string[] = [
+    'dateOfAbsence',
+    'numberOfPeriod',
+    'subject',
+    'absenceState',
+    'absenceType',
+    'dateAdded'
+  ];
 
-  constructor() {}
+  absences: AbsenceDTO[] = [];
 
-  ngOnInit(): void {}
+  constructor(
+    private absenceService: AbsenceService,
+    private studentService: StudentService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    const userInfo = localStorage.getItem('userInfo');
+    if (!userInfo) {
+      console.error('No user info found in localStorage');
+      return;
+    }
+
+    const userId = JSON.parse(userInfo).id;
+
+    try {
+      const studentId = await firstValueFrom(this.studentService.getStudentIdByUserId(userId));
+
+      if (studentId) {
+        const absences = await firstValueFrom(this.absenceService.getAbsencesByStudentId(studentId));
+        this.absences = absences.map(absence => ({
+          ...absence,
+          subject: absence.scheduleSummaryDTO?.subject ?? 'N/A',
+          numberOfPeriod: absence.scheduleSummaryDTO?.numberOfPeriod ?? 'N/A'
+        }));
+      } else {
+        console.error('Student ID not found');
+      }
+    } catch (error) {
+      console.error('Error fetching absences:', error);
+    }
+  }
 }
