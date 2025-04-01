@@ -32,6 +32,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { withFetch } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ProfileTabComponent } from './profile-tab/profile-tab.component';
+import { StudentScheduleTabComponent } from './student-schedule-tab/student-schedule-tab.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ProfileTabComponent } from './profile-tab/profile-tab.component';
     AbsenceComponent,
     YesNoPipe,
     ProfileTabComponent,
+    StudentScheduleTabComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

@@ -24,14 +24,28 @@ export class HeaderComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private router: Router
-  ) {}
-
-  ngOnInit() {
-    this.user = this.userService.getCurrentUser();
+  ) {
+    // this.loadUserInfo();
+    // this.authService.currentUser$.subscribe((user) => {
+    //   this.user = user;
+    //   console.log('Header updated user:', this.user);
+    // });
+    // const userInfo = localStorage.getItem('userInfo');
+    // this.userService.fetchUserByUsername(userInfo).subscribe(
+    //   (userInfo) => {
+    //     console.log('User Info:', userInfo);
+    //     this.router.navigate(['/grades']);
+    //   },
+    //   (error) => {
+    //     console.error('Failed to fetch user info:', error);
+    //   }
+    // );
+    this.user = this.userService.user;
+    // debugger;
     // console.log(this.user);
     if (isPlatformBrowser(this.platformId)) {
       const storedUser = localStorage.getItem('userInfo');
-      if (storedUser) {
+      if (storedUser !== 'undefined' && storedUser !== null) {
         this.userInfo = JSON.parse(storedUser);
       }
     } else {
@@ -39,8 +53,18 @@ export class HeaderComponent implements OnInit {
     }
   }
 
+  ngOnInit() {
+    // this.user = this.userService.user;
+    this.userService.currentUser$.subscribe((user) => {
+      this.user = user;
+      console.log('Header updated user:', this.user);
+    });
+    // debugger;
+  }
+
   onLogOutClicked(): void {
     this.authService.logout();
+    // this.user = null;
   }
 
   isAuthenticated(): boolean {

@@ -36,7 +36,7 @@ export class TabsHeaderComponent implements OnInit {
     } else if (index === 1) {
       this.router.navigate(['/absence']);
     } else if (index === 2) {
-      this.router.navigate(['/schedule']);
+      this.router.navigate(['/student-schedule']);
     }
   }
 

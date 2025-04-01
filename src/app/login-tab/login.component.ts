@@ -22,16 +22,13 @@ export class LoginComponent {
       (response) => {
         if (response.token) {
           this.authService.storeToken(response.token);
-
-          // Fetch user info and save it
           this.userService.fetchUserByUsername(this.username).subscribe(
             (userInfo) => {
               console.log('User Info:', userInfo);
+              this.userService.setUser(userInfo); // Update user state
               this.router.navigate(['/grades']);
             },
-            (error) => {
-              console.error('Failed to fetch user info:', error);
-            }
+            (error) => console.error('Failed to fetch user info:', error)
           );
         }
       },
@@ -41,6 +38,30 @@ export class LoginComponent {
       }
     );
   }
+
+  // onLogin() {
+  //   this.authService.login(this.username, this.password).subscribe(
+  //     (response) => {
+  //       if (response.token) {
+  //         this.authService.storeToken(response.token);
+  //         // Fetch user info and save it
+  //         this.userService.fetchUserByUsername(this.username).subscribe(
+  //           (userInfo) => {
+  //             console.log('User Info:', userInfo);
+  //             this.router.navigate(['/grades']);
+  //           },
+  //           (error) => {
+  //             console.error('Failed to fetch user info:', error);
+  //           }
+  //         );
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Login failed', error);
+  //       alert('Invalid credentials. Please try again.');
+  //     }
+  //   );
+  // }
 
   // onLogin() {
   //   this.authService.login(this.username, this.password).subscribe(

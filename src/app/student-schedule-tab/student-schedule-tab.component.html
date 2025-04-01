@@ -1,0 +1,35 @@
+<div class="schedule-container">
+  <h2>Weekly Class Schedule</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Period</th>
+        <th
+          *ngFor="
+            let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+          "
+        >
+          {{ day }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let period of [1, 2, 3, 4, 5]">
+        <td>Period {{ period }}</td>
+        <td
+          *ngFor="
+            let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+          "
+        >
+          <ul>
+            <ng-container *ngFor="let entry of schedule[day]">
+              <li *ngIf="entry.period === period">
+                {{ entry.subject }}
+              </li>
+            </ng-container>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
