@@ -1,35 +1,67 @@
-<table mat-table [dataSource]="grades" class="mat-elevation-z8">
+<!-- Custom merged header row for terms -->
+<table class="mat-elevation-z8 full-width-table">
+  <thead>
+    <tr>
+      <th rowspan="2">Предмет</th>
+      <th colspan="2">I срок</th>
+      <th colspan="2">II срок</th>
+      <th rowspan="2">Годишна</th>
+    </tr>
+    <tr>
+      <th>Текущи</th>
+      <th>Срочна</th>
+      <th>Текущи</th>
+      <th>Срочна</th>
+    </tr>
+  </thead>
+</table>
+
+<!-- Now the Angular Material table for data only (no header rows here) -->
+<table
+  mat-table
+  [dataSource]="grades"
+  class="mat-elevation-z8 full-width-table"
+>
+  <!-- SUBJECT -->
   <ng-container matColumnDef="subject">
-    <th mat-header-cell *matHeaderCellDef>Subject</th>
-    <td mat-cell *matCellDef="let grade">{{ grade.subject.title }}</td>
+    <td mat-cell *matCellDef="let grade">{{ grade.subject }}</td>
   </ng-container>
 
-  <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef>Type</th>
-    <td mat-cell *matCellDef="let grade">{{ grade.gradeType }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="term">
-    <th mat-header-cell *matHeaderCellDef>Term</th>
-    <td mat-cell *matCellDef="let grade">{{ grade.term.termType }}</td>
-  </ng-container>
-
-  <ng-container matColumnDef="grade">
-    <th mat-header-cell *matHeaderCellDef>Grade</th>
+  <!-- WINTER TEKUSHTA -->
+  <ng-container matColumnDef="winterTekushta">
     <td mat-cell *matCellDef="let grade">
-      <div class="grade-circle" [ngClass]="getGradeClass(grade.grade)">
-        {{ grade.grade }}
-      </div>
+      {{ grade.winter.tekushta.join(", ") }}
     </td>
   </ng-container>
 
-  <ng-container matColumnDef="date">
-    <th mat-header-cell *matHeaderCellDef>Date</th>
+  <!-- WINTER SROCHNA -->
+  <ng-container matColumnDef="winterSrochna">
     <td mat-cell *matCellDef="let grade">
-      {{ grade.dateOfGrade | date : "dd/MM/yyyy" }}
+      {{ grade.winter.srochna.join(", ") }}
     </td>
   </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  <!-- SPRING TEKUSHTA -->
+  <ng-container matColumnDef="springTekushta">
+    <td mat-cell *matCellDef="let grade">
+      {{ grade.spring.tekushta.join(", ") }}
+    </td>
+  </ng-container>
+
+  <!-- SPRING SROCHNA -->
+  <ng-container matColumnDef="springSrochna">
+    <td mat-cell *matCellDef="let grade">
+      {{ grade.spring.srochna.join(", ") }}
+    </td>
+  </ng-container>
+
+  <!-- GODISHNA -->
+  <ng-container matColumnDef="godishna">
+    <td mat-cell *matCellDef="let grade">
+      {{ grade.godishna.join(", ") }}
+    </td>
+  </ng-container>
+
+  <!-- DATA ROW -->
+  <tr mat-row *matRowDef="let row; columns: secondHeaderRow"></tr>
 </table>

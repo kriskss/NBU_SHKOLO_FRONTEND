@@ -73,6 +73,7 @@ export class AuthService {
   storeToken(token: string): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('authToken', token);
+      localStorage.setItem('selectedTab', '0');
     }
   }
 
@@ -97,6 +98,7 @@ export class AuthService {
   logout(): void {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('authToken');
+      // localStorage.setItem('selectedTab', '0');
     }
     this.router.navigate(['/login']);
   }

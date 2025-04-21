@@ -15,6 +15,9 @@ export class UserService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
+  private currentTabSubject = new BehaviorSubject<number>(0);
+  public currentTab$ = this.currentTabSubject.asObservable();
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -24,7 +27,10 @@ export class UserService {
 
   setUser(user: User): void {
     this.currentUserSubject.next(user);
-    localStorage.setItem('userInfo', JSON.stringify(user)); // Store in local storage
+    // this.currentTabSubject.next(0);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('userInfo', JSON.stringify(user));
+    }
   }
 
   getUser(): User | null {
@@ -33,45 +39,32 @@ export class UserService {
 
   fetchUserByUsername(username: string): Observable<User> {
     const token = this.getToken();
-
     const headers = new HttpHeaders({
       Authorization: token ? `Bearer ${token}` : '',
     });
 
     return this.http.get<User>(`${this.apiUrl}${username}`, { headers }).pipe(
       tap((user) => {
-        // debugger;
-        this.currentUser = user;
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.setItem('userInfo', JSON.stringify(user));
-        }
+        this.setUser(user);
       })
     );
   }
 
-  get user(): User | null {
-    // debugger;
-    return this.currentUser;
-  }
-
-  // getCurrentUser(): User | null {
-  //   debugger;
-  //   return this.currentUser;
-  // }
-
-  clearUser() {
-    this.currentUser = null;
+  clearUser(): void {
+    this.currentUserSubject.next(null);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('userInfo');
     }
   }
 
-  loadUserFromLocalStorage(): any {
+  private loadUserFromLocalStorage(): void {
     if (isPlatformBrowser(this.platformId)) {
-      const userInfo = localStorage.getItem('userInfo');
-      return userInfo ? JSON.parse(userInfo) : null;
+      const storedUser = localStorage.getItem('userInfo');
+      if (storedUser) {
+        const user: User = JSON.parse(storedUser);
+        this.currentUserSubject.next(user);
+      }
     }
-    return null;
   }
 
   // Safely load from localStorage

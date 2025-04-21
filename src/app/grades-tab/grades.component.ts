@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { StudentService } from '../services/student.service';
 import { firstValueFrom } from 'rxjs';
+import { GradeDetail } from '../models/gradeDetail.model';
 
-export interface Grade {
+export interface GroupedGrade {
   subject: string;
-  grade: string;
-  type: string;
-  term: string;
-  date: Date;
+  winter: {
+    tekushta: number[];
+    srochna: number[];
+  };
+  spring: {
+    tekushta: number[];
+    srochna: number[];
+  };
+  godishna: number[];
 }
 
 @Component({
@@ -17,7 +23,25 @@ export interface Grade {
 })
 export class GradesComponent implements OnInit {
   displayedColumns: string[] = ['subject', 'type', 'term', 'grade', 'date'];
-  grades: Grade[] = [];
+  grades: GroupedGrade[] = [];
+
+  // firstHeaderRow: string[] = [
+  //   'subject',
+  //   'winterGroup',
+  //   'winterGroup',
+  //   'springGroup',
+  //   'springGroup',
+  //   'godishna',
+  // ];
+
+  secondHeaderRow: string[] = [
+    'subject',
+    'winterTekushta',
+    'winterSrochna',
+    'springTekushta',
+    'springSrochna',
+    'godishna',
+  ];
 
   constructor(private studentService: StudentService) {}
 
@@ -38,12 +62,47 @@ export class GradesComponent implements OnInit {
       const studentId = await firstValueFrom(
         this.studentService.getStudentIdByUserId(userId)
       );
-      // console.log(studentId);
+
       if (studentId) {
-        this.grades = await firstValueFrom(
+        const rawGrades = await firstValueFrom(
           this.studentService.getStudentGrades(studentId)
         );
-        // console.log(this.grades);
+
+        const grouped: { [key: string]: GroupedGrade } = {};
+
+        rawGrades.forEach((grade: GradeDetail) => {
+          const subject = grade.subject.title;
+          if (!grouped[subject]) {
+            grouped[subject] = {
+              subject,
+              winter: { tekushta: [], srochna: [] },
+              spring: { tekushta: [], srochna: [] },
+              godishna: [],
+            };
+          }
+
+          const gradeValue = grade.grade;
+          const term = grade.term.termType; // WINTER or SPRING
+          const type = grade.gradeType; // TEKUSHTA, SROCHNA, GODISHNA
+
+          if (term === 'WINTER') {
+            if (type === 'TEKUSHTA')
+              grouped[subject].winter.tekushta.push(gradeValue);
+            if (type === 'SROCHNA')
+              grouped[subject].winter.srochna.push(gradeValue);
+          } else if (term === 'SPRING') {
+            if (type === 'TEKUSHTA')
+              grouped[subject].spring.tekushta.push(gradeValue);
+            if (type === 'SROCHNA')
+              grouped[subject].spring.srochna.push(gradeValue);
+          }
+
+          if (type === 'GODISHNA') {
+            grouped[subject].godishna.push(gradeValue);
+          }
+        });
+
+        this.grades = Object.values(grouped);
       } else {
         console.error('Student ID not found');
       }

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
+import { TabService } from '../services/tab.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,8 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private tabService: TabService
   ) {}
 
   onLogin() {
@@ -26,6 +28,8 @@ export class LoginComponent {
             (userInfo) => {
               console.log('User Info:', userInfo);
               this.userService.setUser(userInfo); // Update user state
+              // localStorage.removeItem('selectedTab');
+              this.tabService.resetTab();
               this.router.navigate(['/grades']);
             },
             (error) => console.error('Failed to fetch user info:', error)

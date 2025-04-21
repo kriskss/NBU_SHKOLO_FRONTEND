@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TabService } from '../../services/tab.service';
 
 @Component({
   selector: 'app-tabsHeader',
@@ -10,34 +11,35 @@ import { AuthService } from '../../services/auth.service';
 export class TabsHeaderComponent implements OnInit {
   selectedTab: number = 0; // Default to first tab
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private cdRef: ChangeDetectorRef,
+    private tabService: TabService
+  ) {}
 
   ngOnInit(): void {
     // Ensure localStorage is accessible (only on browser side)
+    // debugger;
     if (typeof window !== 'undefined' && window.localStorage) {
       const savedTabIndex = localStorage.getItem('selectedTab');
       if (savedTabIndex !== null) {
-        this.selectedTab = parseInt(savedTabIndex, 10);
+        this.selectedTab =
+          savedTabIndex !== null ? parseInt(savedTabIndex, 10) : 0;
       }
     }
+    this.tabService.currentTab$.subscribe((tabIndex) => {
+      this.selectedTab = tabIndex;
+    });
   }
 
   onTabChange(event: any) {
     const index = event.index;
-    this.selectedTab = index;
+    this.tabService.setTab(index);
 
-    // Ensure localStorage is accessible (only on browser side)
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem('selectedTab', index.toString());
-    }
-
-    if (index === 0) {
-      this.router.navigate(['/grades']);
-    } else if (index === 1) {
-      this.router.navigate(['/absence']);
-    } else if (index === 2) {
-      this.router.navigate(['/student-schedule']);
-    }
+    // Navigate to the corresponding route
+    const routes = ['/grades', '/absence', '/student-schedule'];
+    this.router.navigate([routes[index]]);
   }
 
   isAuthenticated(): boolean {

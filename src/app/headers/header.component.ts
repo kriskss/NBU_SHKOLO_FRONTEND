@@ -1,4 +1,11 @@
-import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  OnInit,
+  Output,
+  PLATFORM_ID,
+} from '@angular/core';
 import { Student } from '../models/student.model';
 import { StudentService } from '../services/student.service';
 import { AuthService } from '../services/auth.service';
@@ -6,6 +13,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
+import { TabService } from '../services/tab.service';
 
 @Component({
   selector: 'app-header',
@@ -18,53 +26,35 @@ export class HeaderComponent implements OnInit {
   schoolName: string = 'Your School Name'; // Replace with actual school name
   studentName: string = 'Student Name'; // Replace with actual student name
 
+  @Output() userLoggedOut = new EventEmitter<void>();
+
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private studentService: StudentService,
     private authService: AuthService,
     private userService: UserService,
-    private router: Router
-  ) {
-    // this.loadUserInfo();
-    // this.authService.currentUser$.subscribe((user) => {
-    //   this.user = user;
-    //   console.log('Header updated user:', this.user);
-    // });
-    // const userInfo = localStorage.getItem('userInfo');
-    // this.userService.fetchUserByUsername(userInfo).subscribe(
-    //   (userInfo) => {
-    //     console.log('User Info:', userInfo);
-    //     this.router.navigate(['/grades']);
-    //   },
-    //   (error) => {
-    //     console.error('Failed to fetch user info:', error);
-    //   }
-    // );
-    this.user = this.userService.user;
-    // debugger;
-    // console.log(this.user);
-    if (isPlatformBrowser(this.platformId)) {
-      const storedUser = localStorage.getItem('userInfo');
-      if (storedUser !== 'undefined' && storedUser !== null) {
-        this.userInfo = JSON.parse(storedUser);
-      }
-    } else {
-      console.warn('Running on the server. Skipping localStorage.');
-    }
-  }
+    private router: Router,
+    private tabService: TabService
+  ) {}
 
   ngOnInit() {
-    // this.user = this.userService.user;
     this.userService.currentUser$.subscribe((user) => {
       this.user = user;
       console.log('Header updated user:', this.user);
     });
-    // debugger;
+
+    if (!this.user) {
+      this.user = this.userService.getUser();
+    }
   }
 
   onLogOutClicked(): void {
     this.authService.logout();
-    // this.user = null;
+    this.userService.clearUser();
+    this.user = null;
+    localStorage.removeItem('selectedTab');
+    this.tabService.resetTab();
+    this.userLoggedOut.emit();
   }
 
   isAuthenticated(): boolean {
