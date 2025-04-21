@@ -1,18 +1,31 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../services/user.service';
+import { User } from '../models/user.model';
 
 @Component({
   selector: 'app-profile-tab',
   templateUrl: './profile-tab.component.html',
   styleUrls: ['./profile-tab.component.scss'],
 })
-export class ProfileTabComponent {
-  userProfile = {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'johndoe@example.com',
-    phoneNumber: '123-456-7890',
-    birthDate: '15/08/1995',
-    address: '123 Main St, City',
-    role: 'ROLE_STUDENT',
-  };
+export class ProfileTabComponent implements OnInit {
+  userProfile: User | null = null;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    const storedUser = this.userService.getUser();
+
+    if (storedUser) {
+      this.userProfile = storedUser;
+    } else {
+      this.userService.fetchUserByUsername('johndoe').subscribe(
+        (user) => {
+          this.userProfile = user;
+        },
+        (error) => {
+          console.error('Error fetching user data:', error);
+        }
+      );
+    }
+  }
 }

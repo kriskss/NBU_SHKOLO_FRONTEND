@@ -1,12 +1,11 @@
-<div class="profile-container">
-  <h2>Profile Information</h2>
-  <div class="profile-info">
-    <p><strong>First Name:</strong> {{ userProfile.firstName }}</p>
-    <p><strong>Last Name:</strong> {{ userProfile.lastName }}</p>
-    <p><strong>Email:</strong> {{ userProfile.email }}</p>
-    <p><strong>Phone Number:</strong> {{ userProfile.phoneNumber }}</p>
-    <p><strong>Birth Date:</strong> {{ userProfile.birthDate }}</p>
-    <p><strong>Address:</strong> {{ userProfile.address }}</p>
-    <p><strong>Role:</strong> {{ userProfile.role }}</p>
-  </div>
+<div *ngIf="userProfile; else loading">
+  <h2>{{ userProfile.firstName }} {{ userProfile.lastName }}</h2>
+  <p><strong>Email:</strong> {{ userProfile.email }}</p>
+  <p><strong>Phone:</strong> {{ userProfile.phoneNumber }}</p>
+  <p><strong>Birth Date:</strong> {{ userProfile.birthDate | date }}</p>
+  <p><strong>Address:</strong> {{ userProfile.address }}</p>
 </div>
+
+<ng-template #loading>
+  <p>Loading user profile...</p>
+</ng-template>
