@@ -1,34 +1,23 @@
 <div class="schedule-container">
-  <h2>Weekly Class Schedule</h2>
-  <table>
+  <table class="schedule-table">
     <thead>
       <tr>
-        <th>Period</th>
-        <th
-          *ngFor="
-            let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-          "
-        >
-          {{ day }}
-        </th>
+        <th>Час</th>
+        <th>Понеделник</th>
+        <th>Вторник</th>
+        <th>Сряда</th>
+        <th>Четвъртък</th>
+        <th>Петък</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let period of [1, 2, 3, 4, 5]">
-        <td>Period {{ period }}</td>
-        <td
-          *ngFor="
-            let day of ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-          "
-        >
-          <ul>
-            <ng-container *ngFor="let entry of schedule[day]">
-              <li *ngIf="entry.period === period">
-                {{ entry.subject }}
-              </li>
-            </ng-container>
-          </ul>
-        </td>
+      <tr *ngFor="let period of [1, 2, 3, 4, 5, 6, 7]">
+        <td>{{ period }}</td>
+        <td>{{ getSubjectTitle(mondaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(tuesdaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(wednesdaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(thursdaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(fridaySchedule, period) }}</td>
       </tr>
     </tbody>
   </table>
