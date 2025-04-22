@@ -6,14 +6,14 @@ import { GradeDetail } from '../models/gradeDetail.model';
 export interface GroupedGrade {
   subject: string;
   winter: {
-    tekushta: number[];
-    srochna: number[];
+    tekushta: { grade: number; dateAdded: string; dateOfGrade: string }[];
+    srochna: { grade: number; dateAdded: string; dateOfGrade: string }[];
   };
   spring: {
-    tekushta: number[];
-    srochna: number[];
+    tekushta: { grade: number; dateAdded: string; dateOfGrade: string }[];
+    srochna: { grade: number; dateAdded: string; dateOfGrade: string }[];
   };
-  godishna: number[];
+  godishna: { grade: number; dateAdded: string; dateOfGrade: string }[];
 }
 
 @Component({
@@ -24,15 +24,6 @@ export interface GroupedGrade {
 export class GradesComponent implements OnInit {
   displayedColumns: string[] = ['subject', 'type', 'term', 'grade', 'date'];
   grades: GroupedGrade[] = [];
-
-  // firstHeaderRow: string[] = [
-  //   'subject',
-  //   'winterGroup',
-  //   'winterGroup',
-  //   'springGroup',
-  //   'springGroup',
-  //   'godishna',
-  // ];
 
   secondHeaderRow: string[] = [
     'subject',
@@ -68,6 +59,8 @@ export class GradesComponent implements OnInit {
           this.studentService.getStudentGrades(studentId)
         );
 
+        console.log(rawGrades);
+
         const grouped: { [key: string]: GroupedGrade } = {};
 
         rawGrades.forEach((grade: GradeDetail) => {
@@ -81,24 +74,29 @@ export class GradesComponent implements OnInit {
             };
           }
 
-          const gradeValue = grade.grade;
+          const gradeInfo = {
+            grade: grade.grade,
+            dateAdded: grade.dateAdded,
+            dateOfGrade: grade.dateOfGrade,
+          };
+
           const term = grade.term.termType; // WINTER or SPRING
           const type = grade.gradeType; // TEKUSHTA, SROCHNA, GODISHNA
 
           if (term === 'WINTER') {
             if (type === 'TEKUSHTA')
-              grouped[subject].winter.tekushta.push(gradeValue);
+              grouped[subject].winter.tekushta.push(gradeInfo);
             if (type === 'SROCHNA')
-              grouped[subject].winter.srochna.push(gradeValue);
+              grouped[subject].winter.srochna.push(gradeInfo);
           } else if (term === 'SPRING') {
             if (type === 'TEKUSHTA')
-              grouped[subject].spring.tekushta.push(gradeValue);
+              grouped[subject].spring.tekushta.push(gradeInfo);
             if (type === 'SROCHNA')
-              grouped[subject].spring.srochna.push(gradeValue);
+              grouped[subject].spring.srochna.push(gradeInfo);
           }
 
           if (type === 'GODISHNA') {
-            grouped[subject].godishna.push(gradeValue);
+            grouped[subject].godishna.push(gradeInfo);
           }
         });
 

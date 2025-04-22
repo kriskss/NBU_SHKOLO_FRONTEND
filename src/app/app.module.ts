@@ -33,6 +33,7 @@ import { withFetch } from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ProfileTabComponent } from './profile-tab/profile-tab.component';
 import { StudentScheduleTabComponent } from './student-schedule-tab/student-schedule-tab.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { StudentScheduleTabComponent } from './student-schedule-tab/student-sche
     MatCardModule,
     ReactiveFormsModule,
     MatGridListModule,
+    MatTooltipModule,
   ],
   providers: [
     provideClientHydration(),

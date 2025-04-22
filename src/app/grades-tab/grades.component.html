@@ -30,35 +30,85 @@
   <!-- WINTER TEKUSHTA -->
   <ng-container matColumnDef="winterTekushta">
     <td mat-cell *matCellDef="let grade">
-      {{ grade.winter.tekushta.join(", ") }}
+      <ng-container *ngFor="let g of grade.winter.tekushta">
+        <span
+          class="grade-chip"
+          [ngClass]="getGradeClass(g.grade)"
+          matTooltip="Добавена: {{
+            g.dateAdded | date : 'shortDate'
+          }}, Оценена: {{ g.dateOfGrade | date : 'shortDate' }}"
+        >
+          {{ g.grade }}
+        </span>
+      </ng-container>
     </td>
   </ng-container>
 
   <!-- WINTER SROCHNA -->
   <ng-container matColumnDef="winterSrochna">
     <td mat-cell *matCellDef="let grade">
-      {{ grade.winter.srochna.join(", ") }}
+      <ng-container *ngFor="let g of grade.winter.srochna">
+        <span
+          class="grade-chip"
+          [ngClass]="getGradeClass(g.grade)"
+          matTooltip="Добавена: {{
+            g.dateAdded | date : 'shortDate'
+          }}, Оценена: {{ g.dateOfGrade | date : 'shortDate' }}"
+        >
+          {{ g.grade }}
+        </span>
+      </ng-container>
     </td>
   </ng-container>
 
   <!-- SPRING TEKUSHTA -->
   <ng-container matColumnDef="springTekushta">
     <td mat-cell *matCellDef="let grade">
-      {{ grade.spring.tekushta.join(", ") }}
+      <ng-container *ngFor="let g of grade.spring.tekushta">
+        <span
+          class="grade-chip"
+          [ngClass]="getGradeClass(g.grade)"
+          matTooltip="Добавена: {{
+            g.dateAdded | date : 'shortDate'
+          }}, Оценена: {{ g.dateOfGrade | date : 'shortDate' }}"
+        >
+          {{ g.grade }}
+        </span>
+      </ng-container>
     </td>
   </ng-container>
 
   <!-- SPRING SROCHNA -->
   <ng-container matColumnDef="springSrochna">
     <td mat-cell *matCellDef="let grade">
-      {{ grade.spring.srochna.join(", ") }}
+      <ng-container *ngFor="let g of grade.spring.srochna">
+        <span
+          class="grade-chip"
+          [ngClass]="getGradeClass(g.grade)"
+          matTooltip="Добавена: {{
+            g.dateAdded | date : 'shortDate'
+          }}, Оценена: {{ g.dateOfGrade | date : 'shortDate' }}"
+        >
+          {{ g.grade }}
+        </span>
+      </ng-container>
     </td>
   </ng-container>
 
   <!-- GODISHNA -->
   <ng-container matColumnDef="godishna">
     <td mat-cell *matCellDef="let grade">
-      {{ grade.godishna.join(", ") }}
+      <ng-container *ngFor="let g of grade.godishna">
+        <span
+          class="grade-chip"
+          [ngClass]="getGradeClass(g.grade)"
+          matTooltip="Добавена: {{
+            g.dateAdded | date : 'shortDate'
+          }}, Оценена: {{ g.dateOfGrade | date : 'shortDate' }}"
+        >
+          {{ g.grade }}
+        </span>
+      </ng-container>
     </td>
   </ng-container>
 
