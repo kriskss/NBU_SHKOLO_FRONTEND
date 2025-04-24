@@ -37,10 +37,19 @@ export class HeaderComponent implements OnInit {
     private tabService: TabService
   ) {}
 
-  ngOnInit() {
-    this.userService.currentUser$.subscribe((user) => {
+  async ngOnInit() {
+    this.userService.currentUser$.subscribe(async (user) => {
       this.user = user;
       console.log('Header updated user:', this.user);
+
+      if (user) {
+        this.userService.userID = user.id;
+        const studentData = await this.studentService.fetchStudent(
+          this.userService.userID
+        );
+        console.log(studentData);
+        this.schoolName = studentData.klass.school.name;
+      }
     });
 
     if (!this.user) {

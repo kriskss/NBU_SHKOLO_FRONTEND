@@ -29,11 +29,7 @@ export class ScheduleService {
     );
 
     // Step 2: Get student details to extract class ID
-    const studentData = await firstValueFrom(
-      this.http.get<any>(`http://localhost:8081/student/fetch/${studentID}`, {
-        headers: this.getAuthHeaders(),
-      })
-    );
+    const studentData = await this.studentService.fetchStudent(studentID);
 
     const classId = studentData.klass.id;
     // console.log('Class ID:', classId);

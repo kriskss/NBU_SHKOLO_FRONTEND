@@ -18,6 +18,9 @@ export class UserService {
   private currentTabSubject = new BehaviorSubject<number>(0);
   public currentTab$ = this.currentTabSubject.asObservable();
 
+  public userRole: any[] = [];
+  public userID: number = 1;
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -30,6 +33,8 @@ export class UserService {
     // this.currentTabSubject.next(0);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('userInfo', JSON.stringify(user));
+      this.userID = user.id;
+      this.userRole = user.authorities;
     }
   }
 

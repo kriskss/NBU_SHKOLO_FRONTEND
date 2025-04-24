@@ -59,7 +59,7 @@ export class GradesComponent implements OnInit {
           this.studentService.getStudentGrades(studentId)
         );
 
-        console.log(rawGrades);
+        // console.log(rawGrades);
 
         const grouped: { [key: string]: GroupedGrade } = {};
 

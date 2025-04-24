@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Student } from '../models/student.model';
+import { firstValueFrom } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -9,13 +11,10 @@ import { Student } from '../models/student.model';
 export class StudentService {
   private baseUrl = 'http://localhost:8081/student';
 
-  // private httpOptions = {
-  //   headers: new HttpHeaders({
-  //     Authorization: 'Bearer ' + window.localStorage.getItem('token'),
-  //   }),
-  // };
-
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   getStudents(): Observable<Student[]> {
     return this.http.get<Student[]>(`${this.baseUrl}`);
@@ -37,41 +36,19 @@ export class StudentService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  // getStudentIdByUserId(userId: number): Observable<number> {
-  //   return this.http.get<number>(
-  //     `${this.baseUrl}/getStudentId/${userId}`,
-  //   );
-  // }
-
   getStudentIdByUserId(userId: number): Observable<number> {
     const token = localStorage.getItem('authToken');
-    // console.log(token);
     const httpOptions = {
       headers: new HttpHeaders({
         Authorization: token ? `Bearer ${token}` : '',
       }),
     };
-    // console.log(httpOptions);
 
     return this.http.get<number>(
       `${this.baseUrl}/getStudentId/${userId}`,
       httpOptions
     );
   }
-
-  // getStudentIdByUserId(userId: number): Observable<number> {
-  //   const token = this.authService.getToken();
-
-  //   const headers = new HttpHeaders({
-  //     'Content-Type': 'application/json',
-  //     Authorization: token ? `Bearer ${token}` : '',
-  //   });
-
-  //   // Make the HTTP request with the headers
-  //   return this.http.get<number>(`${this.baseUrl}/getStudentId/${userId}`, {
-  //     headers,
-  //   });
-  // }
 
   getStudentGrades(id: number): Observable<any> {
     const headers = new HttpHeaders({
@@ -82,5 +59,20 @@ export class StudentService {
     return this.http.get<any>(`${this.baseUrl}/fetch/studentGrades/${id}`, {
       headers,
     });
+  }
+
+  async fetchStudent(id: number): Promise<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return firstValueFrom(
+      this.http.get<any>(`${this.baseUrl}/fetch/${id}`, { headers })
+    );
   }
 }
