@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { StudentService } from '../services/student.service';
 import { firstValueFrom } from 'rxjs';
 import { GradeDetail } from '../models/gradeDetail.model';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 export interface GroupedGrade {
   subject: string;
@@ -24,7 +26,6 @@ export interface GroupedGrade {
 export class GradesComponent implements OnInit {
   displayedColumns: string[] = ['subject', 'type', 'term', 'grade', 'date'];
   grades: GroupedGrade[] = [];
-
   secondHeaderRow: string[] = [
     'subject',
     'winterTekushta',
@@ -34,9 +35,20 @@ export class GradesComponent implements OnInit {
     'godishna',
   ];
 
-  constructor(private studentService: StudentService) {}
+  constructor(
+    private studentService: StudentService,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   async ngOnInit(): Promise<void> {
+    const activeRole = this.userService.getActiveRole();
+    if (activeRole !== 'ROLE_STUDENT') {
+      console.error('Access denied: Only students can view grades.');
+      this.router.navigate(['/']); // Redirect to home or another page
+      return;
+    }
+
     await this.fetchStudentGrades();
   }
 
@@ -58,8 +70,6 @@ export class GradesComponent implements OnInit {
         const rawGrades = await firstValueFrom(
           this.studentService.getStudentGrades(studentId)
         );
-
-        // console.log(rawGrades);
 
         const grouped: { [key: string]: GroupedGrade } = {};
 

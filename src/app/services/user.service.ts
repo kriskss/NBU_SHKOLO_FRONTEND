@@ -21,11 +21,21 @@ export class UserService {
   public userRole: any[] = [];
   public userID: number = 1;
 
+  private activeRoleSubject = new BehaviorSubject<string | null>(null);
+  activeRole$ = this.activeRoleSubject.asObservable();
+  isMoreThanOneRole = false;
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.loadUserFromLocalStorage();
+    if (isPlatformBrowser(this.platformId)) {
+      const savedRole = localStorage.getItem('activeRole');
+      if (savedRole) {
+        this.activeRoleSubject.next(savedRole);
+      }
+    }
   }
 
   setUser(user: User): void {
@@ -34,7 +44,7 @@ export class UserService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem('userInfo', JSON.stringify(user));
       this.userID = user.id;
-      this.userRole = user.authorities;
+      // this.userRole = user.authorities;
     }
   }
 
@@ -88,5 +98,34 @@ export class UserService {
       return localStorage.getItem('authToken');
     }
     return null;
+  }
+
+  setActiveRole(selectedRole: string): void {
+    this.activeRoleSubject.next(selectedRole);
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem('activeRole', selectedRole);
+    }
+  }
+
+  getActiveRole(): string | null {
+    const role = this.activeRoleSubject.value;
+    if (role) {
+      return role;
+    }
+
+    if (isPlatformBrowser(this.platformId)) {
+      const storedRole = localStorage.getItem('activeRole');
+      if (storedRole) {
+        this.activeRoleSubject.next(storedRole); // Sync it with the subject
+        return storedRole;
+      }
+    }
+
+    return null;
+  }
+
+  clearActiveRole(): void {
+    this.activeRoleSubject.next(null);
+    localStorage.removeItem('activeRole');
   }
 }

@@ -3,14 +3,18 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { TabService } from '../services/tab.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
+  username = '';
+  password = '';
+  roles: any[] = [];
+  selectedRole: string | null = null;
+  loginStep: 'credentials' | 'roleSelection' = 'credentials';
 
   constructor(
     private authService: AuthService,
@@ -19,67 +23,68 @@ export class LoginComponent {
     private tabService: TabService
   ) {}
 
-  onLogin() {
-    this.authService.login(this.username, this.password).subscribe(
-      (response) => {
-        if (response.token) {
-          this.authService.storeToken(response.token);
-          this.userService.fetchUserByUsername(this.username).subscribe(
-            (userInfo) => {
-              console.log('User Info:', userInfo);
-              this.userService.setUser(userInfo); // Update user state
-              // localStorage.removeItem('selectedTab');
-              this.tabService.resetTab();
-              this.router.navigate(['/grades']);
-            },
-            (error) => console.error('Failed to fetch user info:', error)
-          );
-        }
-      },
-      (error) => {
-        console.error('Login failed', error);
-        alert('Invalid credentials. Please try again.');
+  async onLogin() {
+    try {
+      const response = await firstValueFrom(
+        this.authService.login(this.username, this.password)
+      );
+      if (!response.token) throw new Error('No token');
+
+      this.authService.storeToken(response.token);
+
+      const userInfo = await firstValueFrom(
+        this.userService.fetchUserByUsername(this.username)
+      );
+      this.userService.setUser(userInfo);
+      this.roles = userInfo.authorities;
+
+      if (this.roles.length === 1) {
+        this.userService.userRole = this.roles[0].authority;
+        this.selectedRole = this.roles[0].authority;
+        this.finalizeLogin();
+      } else {
+        this.userService.isMoreThanOneRole = true;
+        this.loginStep = 'roleSelection';
       }
-    );
+      console.log(this.userService.isMoreThanOneRole);
+    } catch (error) {
+      console.error('Login failed', error);
+      alert('Login failed. Please check your credentials.');
+    }
   }
 
-  // onLogin() {
-  //   this.authService.login(this.username, this.password).subscribe(
-  //     (response) => {
-  //       if (response.token) {
-  //         this.authService.storeToken(response.token);
-  //         // Fetch user info and save it
-  //         this.userService.fetchUserByUsername(this.username).subscribe(
-  //           (userInfo) => {
-  //             console.log('User Info:', userInfo);
-  //             this.router.navigate(['/grades']);
-  //           },
-  //           (error) => {
-  //             console.error('Failed to fetch user info:', error);
-  //           }
-  //         );
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Login failed', error);
-  //       alert('Invalid credentials. Please try again.');
-  //     }
-  //   );
-  // }
+  onRoleSelected() {
+    if (!this.selectedRole) return;
+    this.finalizeLogin();
+  }
 
-  // onLogin() {
-  //   this.authService.login(this.username, this.password).subscribe(
-  //     (response) => {
-  //       console.log('Login response:', response); // Log response to check token
-  //       if (response.token) {
-  //         this.authService.storeToken(response.token);
-  //         this.router.navigate(['/grades']);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Login failed', error);
-  //       alert('Invalid credentials. Please try again.');
-  //     }
-  //   );
-  // }
+  finalizeLogin() {
+    if (!this.selectedRole) return;
+
+    this.userService.setActiveRole(this.selectedRole);
+    this.tabService.resetTab();
+    this.navigateByRole(this.selectedRole);
+  }
+
+  private navigateByRole(role: string) {
+    switch (role) {
+      case 'ROLE_STUDENT':
+        this.router.navigate(['/grades']);
+        break;
+      case 'ROLE_TEACHER':
+        this.router.navigate(['/teacher-dashboard']);
+        break;
+      case 'ROLE_PARENT':
+        this.router.navigate(['/parent-dashboard']);
+        break;
+      case 'ROLE_USER':
+        this.router.navigate(['/user-dashboard']);
+        break;
+      case 'ROLE_ADMIN':
+        this.router.navigate(['/admin-dashboard']);
+        break;
+      default:
+        this.router.navigate(['/']);
+    }
+  }
 }

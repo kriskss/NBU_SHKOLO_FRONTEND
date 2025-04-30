@@ -14,6 +14,11 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'profile', component: ProfileTabComponent, canActivate: [AuthGuard] },
   { path: 'student-schedule', component: StudentScheduleTabComponent },
+  {
+    path: 'user-dashboard',
+    component: ProfileTabComponent,
+    canActivate: [AuthGuard],
+  },
   // { path: '', redirectTo: '/grades', pathMatch: 'full' },
 ];
 

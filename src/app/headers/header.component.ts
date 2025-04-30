@@ -42,13 +42,19 @@ export class HeaderComponent implements OnInit {
       this.user = user;
       console.log('Header updated user:', this.user);
 
-      if (user) {
+      // Only fetch student data if the active role is student
+      const activeRole = this.userService.getActiveRole();
+      if (user && activeRole === 'ROLE_STUDENT') {
         this.userService.userID = user.id;
-        const studentData = await this.studentService.fetchStudent(
-          this.userService.userID
-        );
-        console.log(studentData);
-        this.schoolName = studentData.klass.school.name;
+        try {
+          const studentData = await this.studentService.fetchStudent(
+            this.userService.userID
+          );
+          console.log(studentData);
+          this.schoolName = studentData.klass.school.name;
+        } catch (error) {
+          console.error('Failed to fetch student data:', error);
+        }
       }
     });
 
@@ -64,6 +70,7 @@ export class HeaderComponent implements OnInit {
     localStorage.removeItem('selectedTab');
     this.tabService.resetTab();
     this.userLoggedOut.emit();
+    this.userService.clearActiveRole();
   }
 
   isAuthenticated(): boolean {

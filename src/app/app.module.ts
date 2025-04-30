@@ -34,6 +34,9 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ProfileTabComponent } from './profile-tab/profile-tab.component';
 import { StudentScheduleTabComponent } from './student-schedule-tab/student-schedule-tab.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatListModule } from '@angular/material/list';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -68,6 +71,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ReactiveFormsModule,
     MatGridListModule,
     MatTooltipModule,
+    MatListModule,
+    MatDialogModule,
+    MatSelectModule,
   ],
   providers: [
     provideClientHydration(),
