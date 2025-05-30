@@ -37,6 +37,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teacher-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +50,7 @@ import { MatSelectModule } from '@angular/material/select';
     YesNoPipe,
     ProfileTabComponent,
     StudentScheduleTabComponent,
+    GradesTeacherDashboardComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

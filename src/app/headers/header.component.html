@@ -1,12 +1,38 @@
 <mat-toolbar *ngIf="isAuthenticated()" color="primary" class="header-toolbar">
+  <!-- CLASS SELECTOR on the far left -->
+  <div class="left-corner">
+    <ng-container *ngIf="klasses.length > 1; else singleClass">
+      <mat-form-field appearance="fill" class="class-dropdown">
+        <mat-label>Class</mat-label>
+        <mat-select
+          [value]="selectedClass?.id"
+          (selectionChange)="onClassChange($event.value)"
+        >
+          <mat-option *ngFor="let klass of klasses" [value]="klass.id">
+            {{ klass.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <ng-template #singleClass>
+      <div class="class-name">{{ selectedClass?.name }}</div>
+    </ng-template>
+  </div>
+
+  <!-- CENTERED CONTENT (unchanged) -->
   <div class="header-content">
     <div class="school-name">{{ schoolName }}</div>
     <div class="student-name">{{ user?.firstName }} {{ user?.lastName }}</div>
   </div>
-  <button mat-button class="profile-button" (click)="onProfileClicked()">
-    Profile
-  </button>
-  <button mat-button class="logout-button" (click)="onLogOutClicked()">
-    Log out
-  </button>
+
+  <!-- ACTION BUTTONS (unchanged) -->
+  <div class="right-buttons">
+    <button mat-button class="profile-button" (click)="onProfileClicked()">
+      Profile
+    </button>
+    <button mat-button class="logout-button" (click)="onLogOutClicked()">
+      Log out
+    </button>
+  </div>
 </mat-toolbar>

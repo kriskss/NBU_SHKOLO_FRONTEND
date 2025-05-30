@@ -35,11 +35,14 @@ export class TabsHeaderComponent implements OnInit {
 
   onTabChange(event: any) {
     const index = event.index;
-    this.tabService.setTab(index);
 
-    // Navigate to the corresponding route
-    const routes = ['/grades', '/absence', '/student-schedule'];
-    this.router.navigate([routes[index]]);
+    const tabRoutes = ['grades', 'absence', 'student-schedule'];
+    const baseRoute = this.router.url.includes('teacher-dashboard')
+      ? '/teacher-dashboard'
+      : '';
+
+    this.tabService.setTab(index);
+    this.router.navigate([`${baseRoute}/${tabRoutes[index]}`]);
   }
 
   isAuthenticated(): boolean {

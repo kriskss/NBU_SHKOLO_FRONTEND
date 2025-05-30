@@ -14,6 +14,8 @@ import { User } from '../models/user.model';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
 import { TabService } from '../services/tab.service';
+import { TeacherService } from '../services/teacher.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-header',
@@ -23,8 +25,12 @@ import { TabService } from '../services/tab.service';
 export class HeaderComponent implements OnInit {
   userInfo: any;
   user: User | null = null;
-  schoolName: string = 'Your School Name'; // Replace with actual school name
-  studentName: string = 'Student Name'; // Replace with actual student name
+  schoolName: string = 'Your School Name';
+  studentName: string = 'Student Name';
+  className: string = '';
+
+  klasses: any[] = [];
+  selectedClass: any = null;
 
   @Output() userLoggedOut = new EventEmitter<void>();
 
@@ -34,7 +40,8 @@ export class HeaderComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
-    private tabService: TabService
+    private tabService: TabService,
+    private teacherService: TeacherService
   ) {}
 
   async ngOnInit() {
@@ -42,8 +49,8 @@ export class HeaderComponent implements OnInit {
       this.user = user;
       console.log('Header updated user:', this.user);
 
-      // Only fetch student data if the active role is student
       const activeRole = this.userService.getActiveRole();
+
       if (user && activeRole === 'ROLE_STUDENT') {
         this.userService.userID = user.id;
         try {
@@ -56,10 +63,80 @@ export class HeaderComponent implements OnInit {
           console.error('Failed to fetch student data:', error);
         }
       }
+
+      if (user && activeRole === 'ROLE_TEACHER') {
+        // debugger;
+        try {
+          const teacherObject = await firstValueFrom(
+            this.teacherService.fetchTeacherId(user.id)
+          );
+
+          if (teacherObject) {
+            const teacherIdForKlasses = teacherObject;
+            const klassesArray = await firstValueFrom(
+              this.teacherService.fetchTeacherKlasses(teacherIdForKlasses)
+            );
+            const teacherData = await firstValueFrom(
+              this.teacherService.fetchTeacher(teacherIdForKlasses)
+            );
+            console.log(teacherData);
+            // debugger;
+            this.schoolName = teacherData?.schools?.[0]?.name ?? '';
+
+            console.log('Teacher Klasses Array:', klassesArray);
+            // debugger;
+
+            if (klassesArray && klassesArray.length > 0) {
+              this.klasses = klassesArray;
+              if (this.klasses[0]) {
+                // debugger;
+                this.setClass(this.klasses[0]);
+              } else {
+                console.warn('First klass or its school property is missing.');
+                this.className = '';
+                this.schoolName = 'School Info Unavailable';
+              }
+            } else {
+              console.log('Teacher has no klasses or data is empty.');
+              this.klasses = [];
+              this.className = '';
+              this.schoolName = 'No Classes Assigned';
+            }
+          } else {
+            console.log('Teacher not found for ID:', user.id, '(could be SSR)');
+            this.klasses = [];
+            this.className = '';
+            this.schoolName = 'Teacher Data Unavailable';
+          }
+        } catch (error) {
+          console.error('Failed to fetch teacher info or klasses:', error);
+          this.klasses = [];
+          this.className = '';
+          this.schoolName = 'Error Loading Teacher Data';
+        }
+      }
     });
 
     if (!this.user) {
       this.user = this.userService.getUser();
+    }
+  }
+
+  // NEW: sets current class and updates displayed names
+  setClass(klass: any) {
+    this.selectedClass = klass;
+    this.className = klass.name;
+    this.teacherService.teacherKlass = this.selectedClass;
+    // this.schoolName = klass.school.name;
+  }
+
+  onClassChange(classId: number) {
+    const selected = this.klasses.find((k) => k.id === classId);
+    if (selected) {
+      this.selectedClass = selected;
+      this.className = selected.name;
+      this.schoolName = selected.school.name;
+      // You can also emit or store the selected class here if needed
     }
   }
 

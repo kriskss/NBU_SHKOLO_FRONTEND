@@ -22,3 +22,24 @@
 .student-name {
   font-size: 1em;
 }
+
+/* NEW for dropdown and layout */
+.left-corner {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.class-dropdown {
+  width: 120px;
+}
+
+.class-name {
+  font-weight: bold;
+  font-size: 1em;
+}
+
+.right-buttons {
+  display: flex;
+  align-items: center;
+}
