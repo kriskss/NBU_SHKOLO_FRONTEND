@@ -70,6 +70,7 @@ export class HeaderComponent implements OnInit {
           const teacherObject = await firstValueFrom(
             this.teacherService.fetchTeacherId(user.id)
           );
+          this.teacherService.setTeacherID(teacherObject);
 
           if (teacherObject) {
             const teacherIdForKlasses = teacherObject;

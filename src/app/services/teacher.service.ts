@@ -11,6 +11,7 @@ import { Teacher } from '../models/teacher.model'; // Assuming Teacher has an 'i
 export class TeacherService {
   private apiUrl = 'http://localhost:8081/teacher';
   public teacherKlass: number | undefined;
+  public teacherID?: number | null;
 
   constructor(
     private http: HttpClient,
@@ -76,5 +77,41 @@ export class TeacherService {
     });
 
     return this.http.get<Teacher>(`${this.apiUrl}/fetch/${id}`, { headers });
+  }
+
+  fetchSubjectsByTeacherId(
+    teacherId: number
+  ): Observable<{ id: number; title: string }[]> {
+    if (!isPlatformBrowser(this.platformId)) return of([]);
+
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<{ id: number; title: string }[]>(
+      `${this.apiUrl}/${teacherId}/subjects`,
+      {
+        headers,
+      }
+    );
+  }
+  getTeacherID(): number | null {
+    if (!isPlatformBrowser(this.platformId)) {
+      return null; // SSR-safe
+    }
+
+    const storedId = localStorage.getItem('teacherID');
+    return storedId ? Number(storedId) : null;
+  }
+
+  setTeacherID(id: number | null): void {
+    if (isPlatformBrowser(this.platformId)) {
+      if (id !== null && id !== undefined) {
+        localStorage.setItem('teacherID', id.toString());
+      } else {
+        localStorage.removeItem('teacherID');
+      }
+    }
   }
 }

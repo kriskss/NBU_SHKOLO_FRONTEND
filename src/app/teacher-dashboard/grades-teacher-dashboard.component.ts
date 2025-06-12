@@ -13,9 +13,11 @@ import { GradeDetail } from '../models/gradeDetail.model';
 })
 export class GradesTeacherDashboardComponent implements OnInit {
   klasses: Klass[] = [];
-  selectedKlass: Klass | null = null;
-  students: Student[] = [];
-  grades: { [studentId: number]: GradeDetail[] } = {};
+  // selectedKlass: Klass | null = null;
+  // students: Student[] = [];
+  // grades: { [studentId: number]: GradeDetail[] } = {};
+  subjects: { id: number; title: string }[] = [];
+  selectedSubjectId: number | null = null;
 
   constructor(
     private teacherService: TeacherService,
@@ -24,13 +26,27 @@ export class GradesTeacherDashboardComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    // const user = this.userService.getUser();
-    // if (!user) return;
-    // const teacherInfo = await this.teacherService.fetchTeacher(user.id).toPromise();
-    // this.klasses = teacherInfo.klasses || [];
-    // if (this.klasses.length > 0) {
-    //   this.selectKlass(this.klasses[0]);
-    // }
+    const teacherId = this.teacherService.getTeacherID();
+
+    if (teacherId == null) {
+      // console.error('Teacher ID is not available');
+      return; // Stop execution if ID is missing
+    }
+
+    this.subjects =
+      (await this.teacherService
+        .fetchSubjectsByTeacherId(teacherId)
+        .toPromise()) || [];
+
+    if (this.subjects.length > 0) {
+      this.selectedSubjectId = this.subjects[0].id;
+    }
+
+    // Assuming you also need to load klasses, add logic here
+    // Example:
+    this.klasses =
+      (await this.teacherService.fetchTeacherKlasses(teacherId).toPromise()) ||
+      [];
   }
 
   async selectKlass(klass: Klass) {
