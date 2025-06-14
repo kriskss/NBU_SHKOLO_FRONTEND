@@ -2,6 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TabService } from '../../services/tab.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-tabsHeader',
@@ -15,31 +16,45 @@ export class TabsHeaderComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private cdRef: ChangeDetectorRef,
-    private tabService: TabService
+    private tabService: TabService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    // Ensure localStorage is accessible (only on browser side)
-    // debugger;
     if (typeof window !== 'undefined' && window.localStorage) {
       const savedTabIndex = localStorage.getItem('selectedTab');
       if (savedTabIndex !== null) {
-        this.selectedTab =
-          savedTabIndex !== null ? parseInt(savedTabIndex, 10) : 0;
+        this.selectedTab = parseInt(savedTabIndex, 10);
       }
     }
+
+    this.syncTabWithUrl(this.router.url);
+
+    this.router.events.subscribe((event: any) => {
+      if (event.urlAfterRedirects) {
+        this.syncTabWithUrl(event.urlAfterRedirects);
+      }
+    });
+
     this.tabService.currentTab$.subscribe((tabIndex) => {
       this.selectedTab = tabIndex;
     });
   }
 
+  private syncTabWithUrl(url: string): void {
+    if (url.includes('grades')) this.selectedTab = 0;
+    else if (url.includes('absence')) this.selectedTab = 1;
+    else if (url.includes('student-schedule')) this.selectedTab = 2;
+  }
+
   onTabChange(event: any) {
     const index = event.index;
 
+    // role-aware base route
+    const isTeacher = this.userService.getActiveRole() === 'ROLE_TEACHER';
+    const baseRoute = isTeacher ? '/teacher-dashboard' : '';
+
     const tabRoutes = ['grades', 'absence', 'student-schedule'];
-    const baseRoute = this.router.url.includes('teacher-dashboard')
-      ? '/teacher-dashboard'
-      : '';
 
     this.tabService.setTab(index);
     this.router.navigate([`${baseRoute}/${tabRoutes[index]}`]);

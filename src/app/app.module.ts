@@ -39,6 +39,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teacher-dashboard.component';
 import { GradeEditDialogComponent } from './teacher-dashboard/grade-edit-dialog/grade-edit-dialog.component';
+import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard-absences.component';
+import { AbsenceDialogComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard/absence-dialog/absence-dialog.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import { GradeEditDialogComponent } from './teacher-dashboard/grade-edit-dialog/
     StudentScheduleTabComponent,
     GradesTeacherDashboardComponent,
     GradeEditDialogComponent,
+    TeacherDashboardAbsencesComponent,
+    AbsenceDialogComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

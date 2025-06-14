@@ -1,0 +1,75 @@
+.absence-table-container {
+  padding: 1rem;
+  max-width: 100%;
+  overflow-x: auto;
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+
+  .add-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  .absence-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+
+    thead {
+      background-color: #007bff;
+      color: white;
+
+      th {
+        padding: 0.7rem 1rem;
+        text-align: left;
+        user-select: none;
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #ddd;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          background-color: #f1f7ff;
+        }
+
+        td {
+          padding: 0.6rem 1rem;
+          vertical-align: middle;
+        }
+
+        button {
+          background-color: transparent;
+          border: 1.5px solid #007bff;
+          color: #007bff;
+          padding: 0.25rem 0.7rem;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          cursor: pointer;
+          margin-right: 0.4rem;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: #007bff;
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}

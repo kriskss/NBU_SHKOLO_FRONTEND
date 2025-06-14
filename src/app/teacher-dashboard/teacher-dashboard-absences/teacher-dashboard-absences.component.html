@@ -1,0 +1,33 @@
+<div class="absence-table-container">
+  <!-- <h2>Absences for Class {{ klassName }}</h2> -->
+
+  <button (click)="openAddAbsenceDialog()" class="add-button">
+    Add Absence
+  </button>
+
+  <table class="absence-table">
+    <thead>
+      <tr>
+        <th>Student Name</th>
+        <th>Date of Absence</th>
+        <th>Absence Type</th>
+        <th>Excused?</th>
+        <th>Schedule</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let absence of absencesList">
+        <td>{{ absence.studentName }}</td>
+        <td>{{ absence.dateOfAbsence | date }}</td>
+        <td>{{ absence.absenceType }}</td>
+        <td>{{ absence.absenceState }}</td>
+        <td>{{ absence.scheduleInfo }}</td>
+        <td>
+          <button (click)="openEditAbsenceDialog(absence)">Edit</button>
+          <button (click)="deleteAbsence(absence.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

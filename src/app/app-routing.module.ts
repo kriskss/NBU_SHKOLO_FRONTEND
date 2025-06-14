@@ -7,6 +7,7 @@ import { AuthGuard } from './login-tab/auth.guard';
 import { ProfileTabComponent } from './profile-tab/profile-tab.component';
 import { StudentScheduleTabComponent } from './student-schedule-tab/student-schedule-tab.component';
 import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teacher-dashboard.component';
+import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard-absences.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -21,7 +22,12 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'grades', pathMatch: 'full' },
       { path: 'grades', component: GradesComponent },
+      // { path: 'absence', component: TeacherDashboardAbsencesComponent },
     ],
+  },
+  {
+    path: 'teacher-dashboard/absence',
+    component: TeacherDashboardAbsencesComponent,
   },
   {
     path: 'user-dashboard',
