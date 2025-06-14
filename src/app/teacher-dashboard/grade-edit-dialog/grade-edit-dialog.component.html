@@ -1,0 +1,50 @@
+<div class="grade-dialog-content">
+  <ng-container *ngIf="data.mode === 'add'">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Срок</mat-label>
+      <mat-select
+        [(value)]="selectedTermType"
+        (selectionChange)="onTermTypeChange()"
+      >
+        <mat-option value="WINTER">Зимен</mat-option>
+        <mat-option value="SPRING">Пролетен</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Вид оценка</mat-label>
+      <mat-select [(value)]="gradeType">
+        <mat-option value="TEKUSHTA">Текуща</mat-option>
+        <mat-option value="SROCHNA">Срочна</mat-option>
+        <mat-option value="GODISHNA">Годишна</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
+  <!-- Grade input visible always -->
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Оценка</mat-label>
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="gradeValue"
+      min="2"
+      max="6"
+      step="1"
+    />
+  </mat-form-field>
+
+  <!-- Buttons -->
+  <div class="dialog-buttons">
+    <button mat-button (click)="cancel()">Отказ</button>
+    <button
+      mat-button
+      color="warn"
+      *ngIf="data.mode === 'edit'"
+      (click)="deleteGrade()"
+    >
+      Изтрий
+    </button>
+    <button mat-button color="primary" (click)="save()">Запази</button>
+  </div>
+</div>

@@ -2,16 +2,19 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable, of, EMPTY } from 'rxjs'; // Import 'of' and 'EMPTY'
+import { Observable, of, EMPTY, BehaviorSubject } from 'rxjs'; // Import 'of' and 'EMPTY'
 import { Teacher } from '../models/teacher.model'; // Assuming Teacher has an 'id' property
+import { Klass } from '../models/klass.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TeacherService {
   private apiUrl = 'http://localhost:8081/teacher';
-  public teacherKlass: number | undefined;
+  public teacherKlass: Klass | null = null;
   public teacherID?: number | null;
+  private selectedKlassSubject = new BehaviorSubject<Klass | null>(null);
+  selectedKlass$ = this.selectedKlassSubject.asObservable();
 
   constructor(
     private http: HttpClient,
@@ -113,5 +116,10 @@ export class TeacherService {
         localStorage.removeItem('teacherID');
       }
     }
+  }
+
+  setSelectedKlass(klass: Klass) {
+    this.teacherKlass = klass;
+    this.selectedKlassSubject.next(klass);
   }
 }

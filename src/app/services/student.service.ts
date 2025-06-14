@@ -75,4 +75,32 @@ export class StudentService {
       this.http.get<any>(`${this.baseUrl}/fetch/${id}`, { headers })
     );
   }
+
+  getStudentIdsByKlassId(klassId: number): Observable<number[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<number[]>(
+      `${this.baseUrl}/klasses/${klassId}/student-ids`,
+      { headers }
+    );
+  }
+
+  getStudentUserById(studentId: number): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get(`${this.baseUrl}/${studentId}/user`, { headers });
+  }
 }

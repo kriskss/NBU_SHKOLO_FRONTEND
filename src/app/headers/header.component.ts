@@ -127,7 +127,8 @@ export class HeaderComponent implements OnInit {
   setClass(klass: any) {
     this.selectedClass = klass;
     this.className = klass.name;
-    this.teacherService.teacherKlass = this.selectedClass;
+    // this.teacherService.teacherKlass = this.selectedClass;
+    this.teacherService.setSelectedKlass(this.selectedClass);
     // this.schoolName = klass.school.name;
   }
 
@@ -136,8 +137,9 @@ export class HeaderComponent implements OnInit {
     if (selected) {
       this.selectedClass = selected;
       this.className = selected.name;
-      this.schoolName = selected.school.name;
-      // You can also emit or store the selected class here if needed
+
+      // ✅ Notify the rest of the app
+      this.teacherService.setSelectedKlass(this.selectedClass);
     }
   }
 

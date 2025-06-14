@@ -38,6 +38,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teacher-dashboard.component';
+import { GradeEditDialogComponent } from './teacher-dashboard/grade-edit-dialog/grade-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teac
     ProfileTabComponent,
     StudentScheduleTabComponent,
     GradesTeacherDashboardComponent,
+    GradeEditDialogComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

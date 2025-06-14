@@ -1,27 +1,80 @@
 .dropdown-container {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  max-width: 300px;
 }
 
-.dropdown-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
+.students-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+  gap: 1.5rem;
+}
+
+.student-card {
+  background-color: #fff;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.student-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
   color: #333;
 }
 
-.dropdown-select {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+.grades-table-wrapper {
+  overflow-x: auto;
 }
 
-.dropdown-select:focus {
-  border-color: #3b82f6;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.grades-table th,
+.grades-table td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+  vertical-align: top;
+}
+
+.grades-table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  color: #111827;
+}
+
+.grade-chip {
+  display: inline-block;
+  padding: 4px 8px;
+  margin: 2px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+  font-size: 0.85rem;
+}
+
+.grade-excellent {
+  background-color: #4caf50;
+}
+
+.grade-good {
+  background-color: #2196f3;
+}
+
+.grade-average {
+  background-color: #ff9800;
+}
+
+.grade-pass {
+  background-color: #9c27b0;
+}
+
+.grade-fail {
+  background-color: #f44336;
 }
