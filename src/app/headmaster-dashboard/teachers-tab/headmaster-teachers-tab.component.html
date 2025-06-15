@@ -1,0 +1,27 @@
+<div class="teachers-tab">
+  <h2>Учители в училището</h2>
+  <table class="teachers-table" *ngIf="teachers.length > 0; else noTeachers">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Име</th>
+        <th>Предмети</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let teacher of teachers; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ teacher.user.firstName }} {{ teacher.user.lastName }}</td>
+        <td>
+          <span *ngFor="let subject of teacher.subjects; let j = index">
+            {{ subject.title
+            }}<span *ngIf="j < teacher.subjects.length - 1">, </span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noTeachers>
+    <p>Няма учители за показване.</p>
+  </ng-template>
+</div>

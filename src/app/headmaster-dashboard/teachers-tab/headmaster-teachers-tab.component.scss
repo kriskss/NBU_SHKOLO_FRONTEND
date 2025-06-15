@@ -1,0 +1,45 @@
+.teachers-tab {
+  max-width: 800px;
+  margin: 20px auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.teachers-tab h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.teachers-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.teachers-table th,
+.teachers-table td {
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  text-align: left;
+}
+
+.teachers-table th {
+  background-color: #3498db;
+  color: white;
+  font-weight: 600;
+  user-select: none;
+}
+
+.teachers-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.teachers-table tbody tr:hover {
+  background-color: #e1f0ff;
+}
+
+.teachers-table td span {
+  display: inline-block;
+  white-space: nowrap;
+}

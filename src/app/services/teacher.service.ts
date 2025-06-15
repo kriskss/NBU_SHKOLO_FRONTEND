@@ -122,4 +122,18 @@ export class TeacherService {
     this.teacherKlass = klass;
     this.selectedKlassSubject.next(klass);
   }
+
+  getTeachersBySchoolId(schoolId: number): Observable<Teacher[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<Teacher[]>(`${this.apiUrl}/by-school/${schoolId}`, {
+      headers,
+    });
+  }
 }
