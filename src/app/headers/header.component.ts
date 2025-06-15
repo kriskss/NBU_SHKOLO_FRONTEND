@@ -44,12 +44,17 @@ export class HeaderComponent implements OnInit {
     private teacherService: TeacherService
   ) {}
 
-  async ngOnInit() {
+  ngOnInit() {
     this.userService.currentUser$.subscribe(async (user) => {
       this.user = user;
       console.log('Header updated user:', this.user);
 
       const activeRole = this.userService.getActiveRole();
+
+      if (user && activeRole === 'ROLE_PARENT') {
+        this.schoolName = 'Родител';
+        return;
+      }
 
       if (user && activeRole === 'ROLE_STUDENT') {
         this.userService.userID = user.id;
@@ -57,7 +62,6 @@ export class HeaderComponent implements OnInit {
           const studentData = await this.studentService.fetchStudent(
             this.userService.userID
           );
-          console.log(studentData);
           this.schoolName = studentData.klass.school.name;
         } catch (error) {
           console.error('Failed to fetch student data:', error);
@@ -65,7 +69,6 @@ export class HeaderComponent implements OnInit {
       }
 
       if (user && activeRole === 'ROLE_TEACHER') {
-        // debugger;
         try {
           const teacherObject = await firstValueFrom(
             this.teacherService.fetchTeacherId(user.id)
@@ -73,38 +76,28 @@ export class HeaderComponent implements OnInit {
           this.teacherService.setTeacherID(teacherObject);
 
           if (teacherObject) {
-            const teacherIdForKlasses = teacherObject;
             const klassesArray = await firstValueFrom(
-              this.teacherService.fetchTeacherKlasses(teacherIdForKlasses)
+              this.teacherService.fetchTeacherKlasses(teacherObject)
             );
             const teacherData = await firstValueFrom(
-              this.teacherService.fetchTeacher(teacherIdForKlasses)
+              this.teacherService.fetchTeacher(teacherObject)
             );
-            console.log(teacherData);
-            // debugger;
             this.schoolName = teacherData?.schools?.[0]?.name ?? '';
-
-            console.log('Teacher Klasses Array:', klassesArray);
-            // debugger;
 
             if (klassesArray && klassesArray.length > 0) {
               this.klasses = klassesArray;
               if (this.klasses[0]) {
-                // debugger;
                 this.setClass(this.klasses[0]);
               } else {
-                console.warn('First klass or its school property is missing.');
                 this.className = '';
                 this.schoolName = 'School Info Unavailable';
               }
             } else {
-              console.log('Teacher has no klasses or data is empty.');
               this.klasses = [];
               this.className = '';
               this.schoolName = 'No Classes Assigned';
             }
           } else {
-            console.log('Teacher not found for ID:', user.id, '(could be SSR)');
             this.klasses = [];
             this.className = '';
             this.schoolName = 'Teacher Data Unavailable';

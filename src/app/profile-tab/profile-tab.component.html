@@ -1,9 +1,27 @@
-<div *ngIf="userProfile; else loading">
+<div *ngIf="userProfile; else loading" class="profile-container">
   <h2>{{ userProfile.firstName }} {{ userProfile.lastName }}</h2>
-  <p><strong>Email:</strong> {{ userProfile.email }}</p>
-  <p><strong>Phone:</strong> {{ userProfile.phoneNumber }}</p>
-  <p><strong>Birth Date:</strong> {{ userProfile.birthDate | date }}</p>
-  <p><strong>Address:</strong> {{ userProfile.address }}</p>
+
+  <div class="profile-info">
+    <p><strong>Email:</strong> {{ userProfile.email }}</p>
+    <p><strong>Phone:</strong> {{ userProfile.phoneNumber }}</p>
+    <p><strong>Birth Date:</strong> {{ userProfile.birthDate | date }}</p>
+    <p><strong>Address:</strong> {{ userProfile.address }}</p>
+  </div>
+
+  <div *ngIf="isParent && children.length > 0" class="children-section">
+    <h3>Children</h3>
+    <div *ngFor="let child of children" class="child-card">
+      <h4>{{ child.firstName }} {{ child.lastName }}</h4>
+      <p *ngIf="child.email"><strong>Email:</strong> {{ child.email }}</p>
+      <p *ngIf="child.birthDate">
+        <strong>Birth Date:</strong> {{ child.birthDate | date }}
+      </p>
+      <ng-container *ngIf="klassMap[child.id]">
+        <p><strong>Class:</strong> {{ klassMap[child.id]?.name }}</p>
+        <p><strong>School:</strong> {{ klassMap[child.id]?.school?.name }}</p>
+      </ng-container>
+    </div>
+  </div>
 </div>
 
 <ng-template #loading>
