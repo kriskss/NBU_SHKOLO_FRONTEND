@@ -53,6 +53,40 @@ export class ScheduleService {
     return filteredSchedules;
   }
 
+  async getTransformedScheduleByKlassId(
+    userId: number,
+    klassIdOverride?: number
+  ): Promise<any[]> {
+    let klassId: number;
+
+    if (klassIdOverride != null) {
+      klassId = klassIdOverride;
+    } else {
+      // Step 1: Get student ID from user ID
+      const studentID: number = await firstValueFrom(
+        this.studentService.getStudentIdByUserId(userId)
+      );
+
+      // Step 2: Get student details to extract class ID
+      const studentData = await this.studentService.fetchStudent(studentID);
+      klassId = studentData.klass.id;
+    }
+
+    // Step 3: Fetch all schedules
+    const allSchedules = await firstValueFrom(
+      this.http.get<any[]>(`${this.scheduleUrl}/fetch/all`, {
+        headers: this.getAuthHeaders(),
+      })
+    );
+
+    // Step 4: Filter schedules based on klassId
+    const filteredSchedules = allSchedules.filter(
+      (schedule) => schedule.klass?.id === klassId
+    );
+
+    return filteredSchedules;
+  }
+
   async getScheduleByKlassId(klassId: number): Promise<any[]> {
     const allSchedules = await firstValueFrom(
       this.http.get<any[]>(`${this.scheduleUrl}/fetch/all`, {
