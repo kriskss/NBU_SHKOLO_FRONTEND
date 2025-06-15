@@ -56,4 +56,13 @@ export class AbsenceService {
       headers,
     });
   }
+
+  addAbsence(absenceData: any) {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.post<any>(`${this.apiUrl}/add`, absenceData, { headers });
+  }
 }

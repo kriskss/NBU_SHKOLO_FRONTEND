@@ -7,7 +7,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login-tab/login.component';
-import { MatPseudoCheckboxModule } from '@angular/material/core';
+import {
+  MatNativeDateModule,
+  MatPseudoCheckboxModule,
+} from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -37,6 +40,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatListModule } from '@angular/material/list';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teacher-dashboard.component';
 import { GradeEditDialogComponent } from './teacher-dashboard/grade-edit-dialog/grade-edit-dialog.component';
 import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard-absences.component';
@@ -82,6 +86,8 @@ import { AbsenceDialogComponent } from './teacher-dashboard/teacher-dashboard-ab
     MatListModule,
     MatDialogModule,
     MatSelectModule,
+    MatNativeDateModule,
+    MatDatepickerModule,
   ],
   providers: [
     provideClientHydration(),

@@ -52,4 +52,14 @@ export class ScheduleService {
 
     return filteredSchedules;
   }
+
+  async getScheduleByKlassId(klassId: number): Promise<any[]> {
+    const allSchedules = await firstValueFrom(
+      this.http.get<any[]>(`${this.scheduleUrl}/fetch/all`, {
+        headers: this.getAuthHeaders(),
+      })
+    );
+
+    return allSchedules.filter((schedule) => schedule.klass?.id === klassId);
+  }
 }

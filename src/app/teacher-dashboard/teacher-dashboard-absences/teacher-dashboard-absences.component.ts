@@ -10,6 +10,9 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { StudentService } from '../../services/student.service';
 import { AbsenceService } from '../../services/absence.service';
 import { TeacherService } from '../../services/teacher.service';
+import { ScheduleService } from '../../services/schedule.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AbsenceDialogComponent } from './teacher-dashboard/absence-dialog/absence-dialog.component';
 
 interface AbsenceWithStudent {
   id: number;
@@ -28,10 +31,10 @@ interface AbsenceWithStudent {
 })
 export class TeacherDashboardAbsencesComponent implements OnInit, OnDestroy {
   selectedKlassId: number | null = null;
-
   private klassSubscription?: Subscription;
 
   absencesList: AbsenceWithStudent[] = [];
+  klassSchedule: any[] = [];
   loading = false;
   error = '';
 
@@ -39,6 +42,8 @@ export class TeacherDashboardAbsencesComponent implements OnInit, OnDestroy {
     private teacherService: TeacherService,
     private studentService: StudentService,
     private absenceService: AbsenceService,
+    private scheduleService: ScheduleService,
+    private dialog: MatDialog,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -53,10 +58,20 @@ export class TeacherDashboardAbsencesComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadAbsencesForKlass(klassId: number): void {
+  async loadAbsencesForKlass(klassId: number): Promise<void> {
     this.loading = true;
     this.error = '';
     this.absencesList = [];
+
+    try {
+      this.klassSchedule = await this.scheduleService.getScheduleByKlassId(
+        klassId
+      );
+      //   console.log('Loaded klassSchedule:', this.klassSchedule);
+    } catch (err) {
+      //   console.error('Failed to load schedule', err);
+      this.klassSchedule = [];
+    }
 
     this.studentService
       .getStudentIdsByKlassId(klassId)
@@ -113,9 +128,9 @@ export class TeacherDashboardAbsencesComponent implements OnInit, OnDestroy {
                 dateOfAbsence: abs.dateOfAbsence,
                 absenceType: abs.absenceType,
                 absenceState: abs.absenceState,
-                scheduleInfo: abs.scheduleSummaryDTO
-                  ? `${abs.scheduleSummaryDTO.dayOfTheWeek} - Period ${abs.scheduleSummaryDTO.numberOfPeriod}`
-                  : '',
+                scheduleInfo: this.findSubjectForSchedule(
+                  abs.scheduleSummaryDTO
+                ),
               });
             });
           });
@@ -130,8 +145,32 @@ export class TeacherDashboardAbsencesComponent implements OnInit, OnDestroy {
       });
   }
 
+  findSubjectForSchedule(summary: any): string {
+    if (!summary || !this.klassSchedule.length) return '';
+
+    const match = this.klassSchedule.find(
+      (s) =>
+        s.dayOfTheWeek === summary.dayOfTheWeek &&
+        s.numberOfPeriod === summary.numberOfPeriod
+    );
+
+    return (
+      match?.subject?.title ||
+      `${summary.dayOfTheWeek} - Period ${summary.numberOfPeriod}`
+    );
+  }
+
   openAddAbsenceDialog() {
-    console.log('Open Add Absence Dialog');
+    const dialogRef = this.dialog.open(AbsenceDialogComponent, {
+      width: '400px',
+      data: { klassId: this.selectedKlassId },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadAbsencesForKlass(this.selectedKlassId!);
+      }
+    });
   }
 
   openEditAbsenceDialog(absence: AbsenceWithStudent) {
