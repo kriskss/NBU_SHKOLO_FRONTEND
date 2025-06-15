@@ -49,14 +49,28 @@ export class TabsHeaderComponent implements OnInit {
 
   onTabChange(event: any) {
     const index = event.index;
+    const role = this.userService.getActiveRole();
+    let baseRoute = '';
 
-    // role-aware base route
-    const isTeacher = this.userService.getActiveRole() === 'ROLE_TEACHER';
-    const baseRoute = isTeacher ? '/teacher-dashboard' : '';
+    switch (role) {
+      case 'ROLE_TEACHER':
+        baseRoute = '/teacher-dashboard';
+        break;
+      case 'ROLE_PARENT':
+        baseRoute = '/parent-dashboard';
+        break;
+      case 'ROLE_STUDENT':
+        baseRoute = ''; // base for students
+        break;
+      default:
+        baseRoute = '';
+    }
 
     const tabRoutes = ['grades', 'absence', 'student-schedule'];
 
     this.tabService.setTab(index);
+    localStorage.setItem('selectedTab', index.toString());
+
     this.router.navigate([`${baseRoute}/${tabRoutes[index]}`]);
   }
 

@@ -75,7 +75,7 @@ export class LoginComponent {
         this.router.navigate(['/teacher-dashboard']);
         break;
       case 'ROLE_PARENT':
-        this.router.navigate(['/parent-dashboard']);
+        this.router.navigate(['/parent-dashboard/grades']);
         break;
       case 'ROLE_USER':
         this.router.navigate(['/user-dashboard']);

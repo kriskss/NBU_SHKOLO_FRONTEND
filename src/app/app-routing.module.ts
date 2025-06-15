@@ -9,6 +9,7 @@ import { StudentScheduleTabComponent } from './student-schedule-tab/student-sche
 import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teacher-dashboard.component';
 import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard-absences.component';
 import { ScheduleTeacherDashboardComponent } from './teacher-dashboard/schedule-teacher-dashboard/schedule-teacher-dashboard.component';
+import { GradesParentDashboardComponent } from './parent-dashboard/grades-parent-dashboard/grades-parent-dashboard.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,6 +34,10 @@ const routes: Routes = [
   {
     path: 'teacher-dashboard/student-schedule',
     component: ScheduleTeacherDashboardComponent,
+  },
+  {
+    path: 'parent-dashboard/grades',
+    component: GradesParentDashboardComponent,
   },
   {
     path: 'user-dashboard',

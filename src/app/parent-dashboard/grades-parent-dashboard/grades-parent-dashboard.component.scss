@@ -1,0 +1,115 @@
+/* Global table styling */
+.full-width-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* Header rows */
+thead {
+  background-color: #f5f5f5;
+}
+
+th {
+  padding: 12px;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #ddd;
+  font-size: 15px;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #eee;
+  vertical-align: middle;
+}
+
+/* Grade chip styling */
+.grade-chip {
+  display: inline-block;
+  padding: 4px 10px;
+  margin: 2px 2px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.excellent {
+  background-color: #66bb6a; /* brighter green */
+  border: 1px solid #2e7d32;
+  color: #fff;
+}
+
+.good {
+  background-color: #ffeb3b; /* brighter yellow */
+  border: 1px solid #fbc02d;
+  color: #000;
+}
+
+.average {
+  background-color: #ffa726; /* brighter orange */
+  border: 1px solid #ef6c00;
+  color: #000;
+}
+
+.bad {
+  background-color: #e57373; /* brighter red */
+  border: 1px solid #c62828;
+  color: #fff;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Zebra striping for rows */
+tr.mat-row:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Style for the dropdown label and select container */
+label[for="childSelect"] {
+  font-weight: 600;
+  margin-right: 8px;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+#childSelect {
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+  vertical-align: middle;
+  transition: border-color 0.3s ease;
+}
+
+#childSelect:hover {
+  border-color: #888;
+}
+
+#childSelect:focus {
+  outline: none;
+  border-color: #3f51b5; /* Material Indigo-ish */
+  box-shadow: 0 0 5px rgba(63, 81, 181, 0.5);
+}
+
+/* Space between dropdown and tables */
+.ng-container, /* wrapper around dropdown */
+  select, label {
+  display: inline-block;
+}
+
+/* Add margin-bottom to the dropdown container */
+.ng-container {
+  margin-bottom: 16px;
+  /* Or adjust the spacing to your liking */
+}
