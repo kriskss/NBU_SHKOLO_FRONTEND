@@ -17,6 +17,10 @@
     </select>
   </ng-container>
 
+  <div *ngIf="children.length === 1" class="single-child-label">
+    Ученик: {{ children[0].firstName }} {{ children[0].lastName }}
+  </div>
+
   <!-- Custom merged header row for terms -->
   <table class="mat-elevation-z8 full-width-table mt-3">
     <thead>

@@ -10,6 +10,7 @@ import { GradesTeacherDashboardComponent } from './teacher-dashboard/grades-teac
 import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard-absences.component';
 import { ScheduleTeacherDashboardComponent } from './teacher-dashboard/schedule-teacher-dashboard/schedule-teacher-dashboard.component';
 import { GradesParentDashboardComponent } from './parent-dashboard/grades-parent-dashboard/grades-parent-dashboard.component';
+import { ParentAbsenceComponent } from './parent-dashboard/absence-parent-dashboard/parent-absence.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -39,6 +40,7 @@ const routes: Routes = [
     path: 'parent-dashboard/grades',
     component: GradesParentDashboardComponent,
   },
+  { path: 'parent-dashboard/absence', component: ParentAbsenceComponent },
   {
     path: 'user-dashboard',
     component: ProfileTabComponent,

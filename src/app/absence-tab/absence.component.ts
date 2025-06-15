@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AbsenceService, AbsenceDTO } from '../services/absence.service';
 import { StudentService } from '../services/student.service';
 import { firstValueFrom } from 'rxjs';
+import { ScheduleService } from '../services/schedule.service';
 
 @Component({
   selector: 'app-absence',
@@ -15,14 +16,17 @@ export class AbsenceComponent implements OnInit {
     'subject',
     'absenceState',
     'absenceType',
-    'dateAdded'
+    'dateAdded',
   ];
 
   absences: AbsenceDTO[] = [];
+  klassSchedule: any[] = [];
+  studentId: number = 0;
 
   constructor(
     private absenceService: AbsenceService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private scheduleService: ScheduleService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -35,20 +39,63 @@ export class AbsenceComponent implements OnInit {
     const userId = JSON.parse(userInfo).id;
 
     try {
-      const studentId = await firstValueFrom(this.studentService.getStudentIdByUserId(userId));
+      this.studentId = await firstValueFrom(
+        this.studentService.getStudentIdByUserId(userId)
+      );
 
-      if (studentId) {
-        const absences = await firstValueFrom(this.absenceService.getAbsencesByStudentId(studentId));
-        this.absences = absences.map(absence => ({
-          ...absence,
-          subject: absence.scheduleSummaryDTO?.subject ?? 'N/A',
-          numberOfPeriod: absence.scheduleSummaryDTO?.numberOfPeriod ?? 'N/A'
-        }));
-      } else {
+      if (!this.studentId) {
         console.error('Student ID not found');
+        return;
       }
+
+      // First, load schedule based on klass
+      await this.loadKlassSchedule();
+
+      // Then fetch absences and resolve subjects
+      const absences = await firstValueFrom(
+        this.absenceService.getAbsencesByStudentId(this.studentId)
+      );
+      this.absences = absences.map((absence) => ({
+        ...absence,
+        subject:
+          this.findSubjectForSchedule(absence.scheduleSummaryDTO) ?? 'N/A',
+        numberOfPeriod: absence.scheduleSummaryDTO?.numberOfPeriod ?? 'N/A',
+      }));
     } catch (error) {
-      console.error('Error fetching absences:', error);
+      console.error('Error loading student absences or schedule:', error);
     }
+  }
+
+  async loadKlassSchedule() {
+    try {
+      const klass = await firstValueFrom(
+        this.studentService.getKlassByStudentId(this.studentId)
+      );
+
+      console.log('Klass info:', klass);
+
+      this.klassSchedule = await this.scheduleService.getScheduleByKlassId(
+        klass.id
+      );
+      // console.log('Loaded klassSchedule:', this.klassSchedule);
+    } catch (err) {
+      console.error('Failed to load klass or schedule', err);
+      this.klassSchedule = [];
+    }
+  }
+
+  findSubjectForSchedule(summary: any): string {
+    if (!summary || !this.klassSchedule.length) return '';
+
+    const match = this.klassSchedule.find(
+      (s) =>
+        s.dayOfTheWeek === summary.dayOfTheWeek &&
+        s.numberOfPeriod === summary.numberOfPeriod
+    );
+
+    return (
+      match?.subject?.title ||
+      `${summary.dayOfTheWeek} - Period ${summary.numberOfPeriod}`
+    );
   }
 }

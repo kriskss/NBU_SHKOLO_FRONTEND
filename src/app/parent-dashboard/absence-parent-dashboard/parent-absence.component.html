@@ -1,0 +1,68 @@
+<div *ngIf="isLoading">Loading...</div>
+
+<div *ngIf="!isLoading">
+  <!-- Dropdown if multiple children -->
+  <ng-container *ngIf="children.length > 1">
+    <label for="childSelect">Select Student:</label>
+    <select
+      id="childSelect"
+      [(ngModel)]="selectedChildId"
+      (change)="onChildSelected()"
+    >
+      <option *ngFor="let child of children" [value]="child.id">
+        {{ child.firstName }} {{ child.lastName }}
+      </option>
+    </select>
+  </ng-container>
+
+  <!-- Show single child's name if only one -->
+  <div *ngIf="children.length === 1" class="single-child-label">
+    Ученик: {{ children[0].firstName }} {{ children[0].lastName }}
+  </div>
+
+  <table
+    mat-table
+    [dataSource]="absences"
+    class="mat-elevation-z8 full-width-table"
+  >
+    <ng-container matColumnDef="dateOfAbsence">
+      <th mat-header-cell *matHeaderCellDef>Date of Absence</th>
+      <td mat-cell *matCellDef="let absence">
+        {{ absence.dateOfAbsence | date }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="numberOfPeriod">
+      <th mat-header-cell *matHeaderCellDef>Period</th>
+      <td mat-cell *matCellDef="let absence">{{ absence.numberOfPeriod }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="subject">
+      <th mat-header-cell *matHeaderCellDef>Subject</th>
+      <td mat-cell *matCellDef="let absence">{{ absence.subject }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="absenceState">
+      <th mat-header-cell *matHeaderCellDef>Absence State</th>
+      <td mat-cell *matCellDef="let absence">{{ absence.absenceState }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="absenceType">
+      <th mat-header-cell *matHeaderCellDef>Absence Type</th>
+      <td mat-cell *matCellDef="let absence">{{ absence.absenceType }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateAdded">
+      <th mat-header-cell *matHeaderCellDef>Date Added</th>
+      <td mat-cell *matCellDef="let absence">
+        {{ absence.dateAdded | date : "short" }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+  <div *ngIf="absences.length === 0" class="no-absences-message">
+    <p>Няма регистрирани отсъствия за този ученик.</p>
+  </div>
+</div>

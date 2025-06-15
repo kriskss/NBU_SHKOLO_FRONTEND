@@ -36,3 +36,6 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
+<div *ngIf="absences.length === 0" class="no-absences-message">
+  <p>Няма регистрирани отсъствия за този ученик.</p>
+</div>

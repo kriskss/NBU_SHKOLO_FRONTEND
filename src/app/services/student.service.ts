@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Student } from '../models/student.model';
 import { firstValueFrom } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { Klass } from '../models/klass.model';
 
 @Injectable({
   providedIn: 'root',
@@ -102,5 +103,15 @@ export class StudentService {
     });
 
     return this.http.get(`${this.baseUrl}/${studentId}/user`, { headers });
+  }
+  getKlassByStudentId(studentId: number): Observable<Klass> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http.get<Klass>(`${this.baseUrl}/${studentId}/klass`, {
+      headers,
+    });
   }
 }

@@ -47,6 +47,7 @@ import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-d
 import { AbsenceDialogComponent } from './teacher-dashboard/teacher-dashboard-absences/teacher-dashboard/absence-dialog/absence-dialog.component';
 import { ScheduleTeacherDashboardComponent } from './teacher-dashboard/schedule-teacher-dashboard/schedule-teacher-dashboard.component';
 import { GradesParentDashboardComponent } from './parent-dashboard/grades-parent-dashboard/grades-parent-dashboard.component';
+import { ParentAbsenceComponent } from './parent-dashboard/absence-parent-dashboard/parent-absence.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { GradesParentDashboardComponent } from './parent-dashboard/grades-parent
     AbsenceDialogComponent,
     ScheduleTeacherDashboardComponent,
     GradesParentDashboardComponent,
+    ParentAbsenceComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
