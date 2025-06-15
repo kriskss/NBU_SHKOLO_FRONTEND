@@ -11,6 +11,7 @@ import { TeacherDashboardAbsencesComponent } from './teacher-dashboard/teacher-d
 import { ScheduleTeacherDashboardComponent } from './teacher-dashboard/schedule-teacher-dashboard/schedule-teacher-dashboard.component';
 import { GradesParentDashboardComponent } from './parent-dashboard/grades-parent-dashboard/grades-parent-dashboard.component';
 import { ParentAbsenceComponent } from './parent-dashboard/absence-parent-dashboard/parent-absence.component';
+import { ScheduleParentDashboardComponent } from './parent-dashboard/schedule-parent-dashboard/schedule-parent-dashboard.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -41,6 +42,10 @@ const routes: Routes = [
     component: GradesParentDashboardComponent,
   },
   { path: 'parent-dashboard/absence', component: ParentAbsenceComponent },
+  {
+    path: 'parent-dashboard/student-schedule',
+    component: ScheduleParentDashboardComponent,
+  },
   {
     path: 'user-dashboard',
     component: ProfileTabComponent,

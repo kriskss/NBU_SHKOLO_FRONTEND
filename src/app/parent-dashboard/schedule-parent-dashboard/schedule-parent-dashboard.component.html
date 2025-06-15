@@ -1,0 +1,48 @@
+<div *ngIf="isLoading">Loading schedule...</div>
+
+<div *ngIf="!isLoading">
+  <!-- Dropdown if multiple children -->
+  <ng-container *ngIf="children.length > 1">
+    <label for="childSelect">Изберете ученик:</label>
+    <select
+      id="childSelect"
+      [(ngModel)]="selectedChildId"
+      (change)="onChildSelected()"
+    >
+      <option *ngFor="let child of children" [value]="child.id">
+        {{ child.firstName }} {{ child.lastName }}
+      </option>
+    </select>
+  </ng-container>
+
+  <!-- Static name if only one child -->
+  <div *ngIf="children.length === 1" class="single-child-label">
+    Ученик: {{ children[0].firstName }} {{ children[0].lastName }}
+  </div>
+
+  <!-- Schedule Table -->
+  <div class="schedule-container">
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Час</th>
+          <th>Понеделник</th>
+          <th>Вторник</th>
+          <th>Сряда</th>
+          <th>Четвъртък</th>
+          <th>Петък</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let period of [1, 2, 3, 4, 5, 6, 7]">
+          <td>{{ period }}</td>
+          <td>{{ getSubjectTitle(mondaySchedule, period) }}</td>
+          <td>{{ getSubjectTitle(tuesdaySchedule, period) }}</td>
+          <td>{{ getSubjectTitle(wednesdaySchedule, period) }}</td>
+          <td>{{ getSubjectTitle(thursdaySchedule, period) }}</td>
+          <td>{{ getSubjectTitle(fridaySchedule, period) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
