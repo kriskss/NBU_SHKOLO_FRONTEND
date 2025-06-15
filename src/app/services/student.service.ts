@@ -5,7 +5,14 @@ import { Student } from '../models/student.model';
 import { firstValueFrom } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { Klass } from '../models/klass.model';
+import { School } from '../models/school.model';
 
+export interface StudentExtended {
+  id: number;
+  klass: Klass;
+  school: School;
+  absences: any[];
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -113,5 +120,22 @@ export class StudentService {
     return this.http.get<Klass>(`${this.baseUrl}/${studentId}/klass`, {
       headers,
     });
+  }
+
+  getStudentsBySchoolId(schoolId: number): Observable<StudentExtended[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<StudentExtended[]>(
+      `${this.baseUrl}/by-school/${schoolId}`,
+      {
+        headers,
+      }
+    );
   }
 }

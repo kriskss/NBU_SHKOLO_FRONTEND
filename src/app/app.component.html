@@ -1,5 +1,9 @@
 <app-header></app-header>
-<app-tabsHeader></app-tabsHeader>
+
+<ng-container *ngIf="showTabsHeader">
+  <app-tabsHeader></app-tabsHeader>
+</ng-container>
+
 <div class="container">
   <div class="row">
     <router-outlet></router-outlet>

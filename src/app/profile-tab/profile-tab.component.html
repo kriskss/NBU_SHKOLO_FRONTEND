@@ -17,8 +17,8 @@
         <strong>Birth Date:</strong> {{ child.birthDate | date }}
       </p>
       <ng-container *ngIf="klassMap[child.id]">
-        <p><strong>Class:</strong> {{ klassMap[child.id]?.name }}</p>
-        <p><strong>School:</strong> {{ klassMap[child.id]?.school?.name }}</p>
+        <p><strong>Class:</strong> {{ klassMap[child.id].name }}</p>
+        <p><strong>School:</strong> {{ klassMap[child.id].school.name }}</p>
       </ng-container>
     </div>
   </div>

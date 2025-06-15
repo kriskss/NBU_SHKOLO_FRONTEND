@@ -1,0 +1,22 @@
+<div class="students-tab">
+  <h2>Ученици в училището</h2>
+  <table class="students-table" *ngIf="students.length > 0; else noStudents">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Име</th>
+        <th>Клас</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of students; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ student.firstName }} {{ student.lastName }}</td>
+        <td>{{ klassStudents[i].klass.name }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <ng-template #noStudents>
+    <p>Няма ученици за показване.</p>
+  </ng-template>
+</div>

@@ -83,6 +83,9 @@ export class LoginComponent {
       case 'ROLE_ADMIN':
         this.router.navigate(['/admin-dashboard']);
         break;
+      case 'ROLE_HEADMASTER':
+        this.router.navigate(['/headmaster-dashboard']);
+        break;
       default:
         this.router.navigate(['/']);
     }

@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { TabService } from '../services/tab.service';
 import { TeacherService } from '../services/teacher.service';
 import { firstValueFrom } from 'rxjs';
+import { HeadmasterService } from '../services/headmaster.service';
 
 @Component({
   selector: 'app-header',
@@ -41,7 +42,8 @@ export class HeaderComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private tabService: TabService,
-    private teacherService: TeacherService
+    private teacherService: TeacherService,
+    private headmasterService: HeadmasterService
   ) {}
 
   ngOnInit() {
@@ -53,10 +55,7 @@ export class HeaderComponent implements OnInit {
 
       if (user && activeRole === 'ROLE_PARENT') {
         this.schoolName = 'Родител';
-        return;
-      }
-
-      if (user && activeRole === 'ROLE_STUDENT') {
+      } else if (user && activeRole === 'ROLE_STUDENT') {
         this.userService.userID = user.id;
         try {
           const studentData = await this.studentService.fetchStudent(
@@ -65,10 +64,9 @@ export class HeaderComponent implements OnInit {
           this.schoolName = studentData.klass.school.name;
         } catch (error) {
           console.error('Failed to fetch student data:', error);
+          this.schoolName = 'Student Data Error';
         }
-      }
-
-      if (user && activeRole === 'ROLE_TEACHER') {
+      } else if (user && activeRole === 'ROLE_TEACHER') {
         try {
           const teacherObject = await firstValueFrom(
             this.teacherService.fetchTeacherId(user.id)
@@ -108,12 +106,23 @@ export class HeaderComponent implements OnInit {
           this.className = '';
           this.schoolName = 'Error Loading Teacher Data';
         }
+      } else if (user && activeRole === 'ROLE_HEADMASTER') {
+        try {
+          const headmasterId = await firstValueFrom(
+            this.headmasterService.getSchoolByUserId(user.id)
+          );
+
+          const schoolData = await firstValueFrom(
+            this.headmasterService.getSchoolByHeadmasterId(headmasterId)
+          );
+
+          this.schoolName = schoolData?.name || 'Unknown School';
+        } catch (error) {
+          console.error('Failed to fetch headmaster school:', error);
+          this.schoolName = 'School Info Unavailable';
+        }
       }
     });
-
-    if (!this.user) {
-      this.user = this.userService.getUser();
-    }
   }
 
   // NEW: sets current class and updates displayed names
