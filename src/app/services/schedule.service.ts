@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { StudentService } from './student.service';
-import { firstValueFrom } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { Student } from '../models/student.model';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,8 @@ export class ScheduleService {
 
   constructor(
     private http: HttpClient,
-    private studentService: StudentService
+    private studentService: StudentService,
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
   private getAuthHeaders(): HttpHeaders {
@@ -95,5 +97,20 @@ export class ScheduleService {
     );
 
     return allSchedules.filter((schedule) => schedule.klass?.id === klassId);
+  }
+
+  async addScheduleEntry(entry: any): Promise<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+    return await firstValueFrom(
+      this.http.post(`${this.scheduleUrl}/add`, entry, {
+        headers,
+      })
+    );
   }
 }

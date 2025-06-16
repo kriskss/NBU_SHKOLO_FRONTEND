@@ -1,0 +1,52 @@
+.schedule-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 0.75rem;
+
+  th,
+  td {
+    border: 1px solid #ccc;
+    padding: 6px 4px; /* more vertical padding */
+    text-align: center;
+    vertical-align: middle; /* center vertically */
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 30px;
+  }
+
+  th:not(:first-child),
+  td:not(:first-child) {
+    width: 100px;
+  }
+
+  .subject-select,
+  .teacher-select {
+    width: 100%;
+    margin: 0;
+  }
+
+  mat-form-field {
+    font-size: 0.75rem;
+    margin: 0;
+    height: auto; /* allow height to fit content */
+
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+
+    .mat-form-field-flex {
+      padding: 0 4px;
+      min-height: 36px; /* enough height for input */
+      align-items: center; /* center vertically */
+    }
+
+    .mat-select-trigger {
+      font-size: 0.75rem;
+      line-height: 1.2;
+      padding: 4px 0; /* vertical padding */
+    }
+  }
+}

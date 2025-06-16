@@ -6,6 +6,11 @@ import { HeadmasterService } from '../../services/headmaster.service';
 import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { TermService } from '../../services/term.service';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  CreateScheduleDialogComponent,
+  CreateScheduleDialogData,
+} from './create-schedule-dialog/create-schedule-dialog.component';
 
 @Component({
   selector: 'app-headmaster-schedule-tab',
@@ -33,7 +38,8 @@ export class HeadmasterScheduleTabComponent implements OnInit {
     private klassService: KlassService,
     private userService: UserService,
     private headmasterService: HeadmasterService,
-    private termService: TermService
+    private termService: TermService,
+    private dialog: MatDialog
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -155,7 +161,29 @@ export class HeadmasterScheduleTabComponent implements OnInit {
     }
   }
 
-  openCreateScheduleDialog() {
-    // TODO: Implement schedule creation dialog
+  openCreateScheduleDialog(): void {
+    if (!this.klasses.length || !this.availableTerms.length) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(CreateScheduleDialogComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      data: {
+        klasses: this.klasses,
+        terms: this.availableTerms,
+        selectedKlassId: this.selectedKlassId,
+        selectedTermId: this.selectedTermId,
+      } as CreateScheduleDialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // result has klassId and termId
+        this.selectedKlassId = result.klassId;
+        this.selectedTermId = result.termId;
+        this.loadSchedule(this.selectedKlassId!, this.selectedTermId!);
+      }
+    });
   }
 }

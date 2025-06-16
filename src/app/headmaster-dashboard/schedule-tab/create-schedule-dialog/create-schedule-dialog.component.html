@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>Създай разписание</h2>
+
+<mat-dialog-content [formGroup]="scheduleForm">
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th>Час</th>
+        <th *ngFor="let day of daysOfWeek">{{ day }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let period of periods; let i = index">
+        <td>{{ period }}</td>
+        <td *ngFor="let day of daysOfWeek; let j = index">
+          <ng-container
+            [formGroup]="getScheduleEntry(i * daysOfWeek.length + j)"
+          >
+            <mat-form-field appearance="fill" class="subject-select">
+              <mat-label>Предмет</mat-label>
+              <mat-select formControlName="subjectId" required>
+                <mat-option *ngFor="let sub of subjects" [value]="sub.id">
+                  {{ sub.title }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  scheduleEntries
+                    .at(i * daysOfWeek.length + j)
+                    .get('subjectId')
+                    ?.hasError('required')
+                "
+                >Моля изберете предмет</mat-error
+              >
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" class="teacher-select">
+              <mat-label>Учител</mat-label>
+              <mat-select formControlName="teacherId" required>
+                <mat-option
+                  *ngFor="
+                    let t of filteredTeachersMap.get(
+                      i * daysOfWeek.length + j
+                    ) || teachers
+                  "
+                  [value]="t.id"
+                >
+                  {{ t.user.firstName }} {{ t.user.lastName }}
+                </mat-option>
+              </mat-select>
+              <mat-error
+                *ngIf="
+                  scheduleEntries
+                    .at(i * daysOfWeek.length + j)
+                    .get('teacherId')
+                    ?.hasError('required')
+                "
+                >Моля изберете учител</mat-error
+              >
+            </mat-form-field>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Отказ</button>
+  <button mat-flat-button color="primary" (click)="onCreate()">Запази</button>
+</mat-dialog-actions>

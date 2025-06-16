@@ -27,6 +27,16 @@
     </div>
   </div>
 
+  <!-- <div style="margin: 15px 0">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="openCreateScheduleDialog()"
+    >
+      Създай нов график
+    </button>
+  </div> -->
+
   <table
     class="schedule-table"
     *ngIf="filteredSchedule.length > 0; else noSchedule"
@@ -55,5 +65,13 @@
 
   <ng-template #noSchedule>
     <p>Няма налично разписание за избрания клас и срок.</p>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="openCreateScheduleDialog()"
+      style="margin-top: 10px"
+    >
+      Искате ли да създадете нов график?
+    </button>
   </ng-template>
 </div>
