@@ -121,6 +121,8 @@ export class HeaderComponent implements OnInit {
           console.error('Failed to fetch headmaster school:', error);
           this.schoolName = 'School Info Unavailable';
         }
+      } else if (user && activeRole === 'ROLE_ADMIN') {
+        this.schoolName = 'ADMIN';
       }
     });
   }

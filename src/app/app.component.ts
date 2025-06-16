@@ -15,5 +15,6 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     const role = this.userService.getActiveRole();
     this.showTabsHeader = role !== 'ROLE_HEADMASTER';
+    this.showTabsHeader = role !== 'ROLE_ADMIN';
   }
 }

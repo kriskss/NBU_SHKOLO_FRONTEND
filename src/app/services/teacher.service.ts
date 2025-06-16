@@ -150,4 +150,20 @@ export class TeacherService {
       headers,
     });
   }
+
+  assignTeacher(data: {
+    userId: number;
+    schoolIds: number[];
+    subjectIds: number[];
+  }) {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+    return this.http.post(`${this.apiUrl}/add`, data, { headers });
+  }
 }

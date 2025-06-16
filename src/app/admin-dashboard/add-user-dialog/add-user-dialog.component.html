@@ -1,0 +1,135 @@
+<h2 mat-dialog-title>Add New User</h2>
+
+<mat-dialog-content [formGroup]="userForm" class="form-layout">
+  <div class="form-fields">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>First Name</mat-label>
+      <input matInput formControlName="firstName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Last Name</mat-label>
+      <input matInput formControlName="lastName" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="phoneNumber" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Birth Date</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="birthDate" />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Address</mat-label>
+      <textarea matInput formControlName="address"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>EGN</mat-label>
+      <input matInput formControlName="egn" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        <mat-option *ngFor="let role of roles" [value]="role">
+          {{ role }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Schools select for teacher role -->
+    <mat-form-field appearance="outline" class="full-width" *ngIf="isTeacher">
+      <mat-label>Assign Schools</mat-label>
+      <mat-select formControlName="schoolIds" multiple>
+        <mat-option *ngFor="let school of schools" [value]="school.id">
+          {{ school.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- School select for student -->
+    <mat-form-field appearance="outline" class="full-width" *ngIf="isStudent">
+      <mat-label>School</mat-label>
+      <mat-select formControlName="studentSchoolId">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option *ngFor="let school of schools" [value]="school.id">
+          {{ school.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Class select for student -->
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+      *ngIf="isStudent && klasses.length"
+    >
+      <mat-label>Class</mat-label>
+      <mat-select formControlName="studentKlassId">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option *ngFor="let klass of klasses" [value]="klass.id">
+          {{ klass.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Parent school select
+    <mat-form-field appearance="outline" class="full-width" *ngIf="isParent">
+      <mat-label>School</mat-label>
+      <mat-select
+        [(value)]="selectedParentSchoolId"
+        (selectionChange)="loadStudentsForSchool($event.value)"
+      >
+        <mat-option *ngFor="let school of schools" [value]="school.id">
+          {{ school.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field
+      appearance="outline"
+      class="full-width"
+      *ngIf="isParent && parentStudents.length"
+    >
+      <mat-label>Select Students</mat-label>
+      <mat-select formControlName="parentStudentIds" multiple>
+        <mat-option *ngFor="let student of parentStudents" [value]="student.id">
+          {{ student.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="p-2">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="submit()"
+    [disabled]="userForm.invalid"
+  >
+    Add
+  </button>
+</mat-dialog-actions>

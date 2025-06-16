@@ -1,0 +1,18 @@
+mat-card {
+  margin: 16px;
+  padding: 16px;
+}
+
+mat-table {
+  width: 100%;
+  overflow: auto;
+}
+mat-form-field {
+  width: 300px;
+  margin-bottom: 16px;
+}
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}

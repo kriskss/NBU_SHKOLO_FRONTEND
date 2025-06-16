@@ -56,6 +56,8 @@ import { HeadmasterParentTabComponent } from './headmaster-dashboard/parent-tab/
 import { HeadmasterKlassTabComponent } from './headmaster-dashboard/klass-tab/headmaster-klass-tab.component';
 import { HeadmasterScheduleTabComponent } from './headmaster-dashboard/schedule-tab/headmaster-schedule-tab.component';
 import { CreateScheduleDialogComponent } from './headmaster-dashboard/schedule-tab/create-schedule-dialog/create-schedule-dialog.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AddUserDialogComponent } from './admin-dashboard/add-user-dialog/add-user-dialog.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +85,8 @@ import { CreateScheduleDialogComponent } from './headmaster-dashboard/schedule-t
     HeadmasterKlassTabComponent,
     HeadmasterScheduleTabComponent,
     CreateScheduleDialogComponent,
+    AdminDashboardComponent,
+    AddUserDialogComponent,
   ],
   bootstrap: [AppComponent],
   imports: [

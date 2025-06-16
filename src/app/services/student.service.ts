@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { Klass } from '../models/klass.model';
 import { School } from '../models/school.model';
+import { StudentDTO } from '../models/studentDTO.model';
 
 export interface StudentExtended {
   id: number;
@@ -32,8 +33,19 @@ export class StudentService {
     return this.http.get<Student>(`${this.baseUrl}/fetch/${id}`);
   }
 
-  createStudent(student: Student): Observable<Student> {
-    return this.http.post<Student>(`${this.baseUrl}`, student);
+  createStudent(studentDTO: StudentDTO): Observable<Student> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.post<Student>(`${this.baseUrl}/add`, studentDTO, {
+      headers,
+    });
   }
 
   updateStudent(id: number, student: Student): Observable<Student> {

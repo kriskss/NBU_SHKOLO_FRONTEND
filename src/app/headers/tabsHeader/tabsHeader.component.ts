@@ -10,7 +10,8 @@ import { UserService } from '../../services/user.service';
   styleUrls: ['./tabsHeader.component.scss'],
 })
 export class TabsHeaderComponent implements OnInit {
-  selectedTab: number = 0; // Default to first tab
+  selectedTab: number = 0;
+  activeRole: string | null = null;
 
   constructor(
     private router: Router,
@@ -21,6 +22,10 @@ export class TabsHeaderComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.activeRole = this.userService.getActiveRole();
+
+    if (this.activeRole === 'ROLE_ADMIN') return;
+
     if (typeof window !== 'undefined' && window.localStorage) {
       const savedTabIndex = localStorage.getItem('selectedTab');
       if (savedTabIndex !== null) {
@@ -60,7 +65,7 @@ export class TabsHeaderComponent implements OnInit {
         baseRoute = '/parent-dashboard';
         break;
       case 'ROLE_STUDENT':
-        baseRoute = ''; // base for students
+        baseRoute = '';
         break;
       default:
         baseRoute = '';

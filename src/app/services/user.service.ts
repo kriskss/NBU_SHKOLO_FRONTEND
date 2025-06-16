@@ -128,4 +128,30 @@ export class UserService {
     this.activeRoleSubject.next(null);
     localStorage.removeItem('activeRole');
   }
+
+  getAllUsers(): Observable<User[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<any[]>('http://localhost:8081/user/fetch/all', {
+      headers,
+    });
+  }
+
+  addUser(user: any): Observable<User> {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+
+    return this.http.post<User>('http://localhost:8081/user/add', user, {
+      headers,
+    });
+  }
 }
