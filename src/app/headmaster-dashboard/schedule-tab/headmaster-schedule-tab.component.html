@@ -1,0 +1,37 @@
+<div class="schedule-container">
+  <div class="klass-selector">
+    <label for="klassDropdown">Избери клас:</label>
+    <select
+      id="klassDropdown"
+      [(ngModel)]="selectedKlassId"
+      (change)="onKlassChange($event)"
+    >
+      <option *ngFor="let klass of klasses" [value]="klass.id">
+        {{ klass.name }}
+      </option>
+    </select>
+  </div>
+
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th>Час</th>
+        <th>Понеделник</th>
+        <th>Вторник</th>
+        <th>Сряда</th>
+        <th>Четвъртък</th>
+        <th>Петък</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let period of [1, 2, 3, 4, 5, 6, 7]">
+        <td>{{ period }}</td>
+        <td>{{ getSubjectTitle(mondaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(tuesdaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(wednesdaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(thursdaySchedule, period) }}</td>
+        <td>{{ getSubjectTitle(fridaySchedule, period) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
