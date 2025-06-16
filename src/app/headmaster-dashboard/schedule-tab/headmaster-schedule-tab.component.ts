@@ -4,6 +4,8 @@ import { KlassService } from '../../services/klass.service';
 import { UserService } from '../../services/user.service';
 import { HeadmasterService } from '../../services/headmaster.service';
 import { firstValueFrom } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { TermService } from '../../services/term.service';
 
 @Component({
   selector: 'app-headmaster-schedule-tab',
@@ -14,6 +16,9 @@ export class HeadmasterScheduleTabComponent implements OnInit {
   klasses: any[] = [];
   selectedKlassId: number | null = null;
 
+  availableTerms: { id: number; termType: string }[] = [];
+  selectedTermId: number | null = null;
+
   filteredSchedule: any[] = [];
   mondaySchedule: any[] = [];
   tuesdaySchedule: any[] = [];
@@ -21,11 +26,14 @@ export class HeadmasterScheduleTabComponent implements OnInit {
   thursdaySchedule: any[] = [];
   fridaySchedule: any[] = [];
 
+  currentTerm: { id: number; termType: string } | null = null;
+
   constructor(
     private scheduleService: ScheduleService,
     private klassService: KlassService,
     private userService: UserService,
-    private headmasterService: HeadmasterService
+    private headmasterService: HeadmasterService,
+    private termService: TermService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -33,6 +41,10 @@ export class HeadmasterScheduleTabComponent implements OnInit {
     if (!user) return;
 
     try {
+      this.availableTerms = await firstValueFrom(
+        this.termService.getAllTerms()
+      );
+
       const headmasterId = await firstValueFrom(
         this.headmasterService.getSchoolByUserId(user.id)
       );
@@ -45,14 +57,22 @@ export class HeadmasterScheduleTabComponent implements OnInit {
 
       if (this.klasses.length > 0) {
         this.selectedKlassId = this.klasses[0].id;
-        this.loadSchedule(this.selectedKlassId!);
+
+        const winterTerm = this.availableTerms.find(
+          (t) => t.termType.toUpperCase() === 'WINTER'
+        );
+        this.selectedTermId = winterTerm
+          ? winterTerm.id
+          : this.availableTerms[0]?.id || null;
+
+        await this.loadSchedule(this.selectedKlassId!, this.selectedTermId!);
       }
     } catch (error) {
-      console.error('Error loading classes or schedule:', error);
+      console.error('Error loading data:', error);
     }
   }
 
-  async loadSchedule(klassId: number) {
+  async loadSchedule(klassId: number, termId?: number) {
     try {
       this.mondaySchedule = [];
       this.tuesdaySchedule = [];
@@ -60,9 +80,24 @@ export class HeadmasterScheduleTabComponent implements OnInit {
       this.thursdaySchedule = [];
       this.fridaySchedule = [];
 
-      this.filteredSchedule = await this.scheduleService.getScheduleByKlassId(
+      const schedules = await this.scheduleService.getScheduleByKlassId(
         klassId
       );
+
+      if (termId) {
+        this.selectedTermId = termId;
+      }
+
+      this.filteredSchedule = schedules.filter(
+        (s) => s.term?.id === this.selectedTermId
+      );
+
+      if (this.filteredSchedule.length > 0) {
+        this.currentTerm = this.filteredSchedule[0].term;
+      } else {
+        this.currentTerm =
+          this.availableTerms.find((t) => t.id === this.selectedTermId) || null;
+      }
 
       this.mondaySchedule = this.getScheduleByDay('Понеделник');
       this.tuesdaySchedule = this.getScheduleByDay('Вторник');
@@ -86,9 +121,41 @@ export class HeadmasterScheduleTabComponent implements OnInit {
   }
 
   onKlassChange(event: Event) {
-    const target = event.target as HTMLSelectElement; // typecast here
-    const value = target.value;
-    this.selectedKlassId = Number(value);
-    this.loadSchedule(this.selectedKlassId);
+    const target = event.target as HTMLSelectElement;
+    this.selectedKlassId = Number(target.value);
+
+    const winterTerm = this.availableTerms.find(
+      (t) => t.termType.toUpperCase() === 'WINTER'
+    );
+    this.selectedTermId = winterTerm
+      ? winterTerm.id
+      : this.availableTerms[0]?.id || null;
+
+    if (this.selectedKlassId) {
+      this.loadSchedule(this.selectedKlassId, this.selectedTermId!);
+    }
+  }
+
+  onTermChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.selectedTermId = Number(target.value);
+    if (this.selectedKlassId && this.selectedTermId) {
+      this.loadSchedule(this.selectedKlassId, this.selectedTermId);
+    }
+  }
+
+  getTermName(termType: string): string {
+    switch (termType.toUpperCase()) {
+      case 'WINTER':
+        return 'Зимен срок';
+      case 'SPRING':
+        return 'Пролетен срок';
+      default:
+        return termType;
+    }
+  }
+
+  openCreateScheduleDialog() {
+    // TODO: Implement schedule creation dialog
   }
 }

@@ -1,18 +1,36 @@
 <div class="schedule-container">
-  <div class="klass-selector">
-    <label for="klassDropdown">Избери клас:</label>
-    <select
-      id="klassDropdown"
-      [(ngModel)]="selectedKlassId"
-      (change)="onKlassChange($event)"
-    >
-      <option *ngFor="let klass of klasses" [value]="klass.id">
-        {{ klass.name }}
-      </option>
-    </select>
+  <div class="selectors">
+    <div class="klass-selector">
+      <label for="klassDropdown">Избери клас:</label>
+      <select
+        id="klassDropdown"
+        [value]="selectedKlassId"
+        (change)="onKlassChange($event)"
+      >
+        <option *ngFor="let klass of klasses" [value]="klass.id">
+          {{ klass.name }}
+        </option>
+      </select>
+    </div>
+
+    <div class="term-selector" *ngIf="availableTerms.length > 0">
+      <label for="termDropdown">Избери срок:</label>
+      <select
+        id="termDropdown"
+        [value]="selectedTermId"
+        (change)="onTermChange($event)"
+      >
+        <option *ngFor="let term of availableTerms" [value]="term.id">
+          {{ getTermName(term.termType) }}
+        </option>
+      </select>
+    </div>
   </div>
 
-  <table class="schedule-table">
+  <table
+    class="schedule-table"
+    *ngIf="filteredSchedule.length > 0; else noSchedule"
+  >
     <thead>
       <tr>
         <th>Час</th>
@@ -34,4 +52,8 @@
       </tr>
     </tbody>
   </table>
+
+  <ng-template #noSchedule>
+    <p>Няма налично разписание за избрания клас и срок.</p>
+  </ng-template>
 </div>
