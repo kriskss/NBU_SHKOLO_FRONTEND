@@ -65,4 +65,19 @@ export class AbsenceService {
 
     return this.http.post<any>(`${this.apiUrl}/add`, absenceData, { headers });
   }
+
+  updateAbsence(absenceId: number, payload: any): Observable<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.put(`${this.apiUrl}/edit/${absenceId}`, payload, {
+      headers,
+    });
+  }
 }

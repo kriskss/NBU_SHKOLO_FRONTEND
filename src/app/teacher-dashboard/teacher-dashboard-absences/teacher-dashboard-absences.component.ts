@@ -174,7 +174,16 @@ export class TeacherDashboardAbsencesComponent implements OnInit, OnDestroy {
   }
 
   openEditAbsenceDialog(absence: AbsenceWithStudent) {
-    console.log('Open Edit Absence Dialog for', absence);
+    const dialogRef = this.dialog.open(AbsenceDialogComponent, {
+      width: '400px',
+      data: { klassId: this.selectedKlassId, absence },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.loadAbsencesForKlass(this.selectedKlassId!);
+      }
+    });
   }
 
   deleteAbsence(absenceId: number) {

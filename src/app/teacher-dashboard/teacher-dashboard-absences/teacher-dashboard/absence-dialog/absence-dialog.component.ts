@@ -16,6 +16,7 @@ export class AbsenceDialogComponent implements OnInit {
   scheduleData: any[] = [];
   filteredSubjects: any[] = [];
   students: { id: number; firstName: string; lastName: string }[] = [];
+  isEditMode = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,35 +28,40 @@ export class AbsenceDialogComponent implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
-    this.absenceForm = this.fb.group({
-      studentId: [null, Validators.required],
-      dateOfAbsence: [null, Validators.required],
-      absenceType: ['UNEXCUSED', Validators.required],
-      absenceState: ['PENDING', Validators.required],
-      subjectId: [null, Validators.required],
-      scheduleInfo: [''],
-    });
+    this.isEditMode = !!this.data?.absence;
 
-    this.loadStudents();
+    if (this.isEditMode) {
+      this.absenceForm = this.fb.group({
+        absenceType: [this.data.absence.absenceType, Validators.required],
+        absenceState: [this.data.absence.absenceState, Validators.required],
+      });
+    } else {
+      this.absenceForm = this.fb.group({
+        studentId: [null, Validators.required],
+        dateOfAbsence: [null, Validators.required],
+        absenceType: ['UNEXCUSED', Validators.required],
+        absenceState: ['PENDING', Validators.required],
+        subjectId: [null, Validators.required],
+      });
 
-    const userInfo = localStorage.getItem('userInfo');
-    const userId = userInfo ? JSON.parse(userInfo).id : null;
+      this.loadStudents();
 
-    const klassId = this.data?.klassId;
-    if (klassId) {
-      this.scheduleData = await this.scheduleService.getScheduleByKlassId(
-        klassId
-      );
-    }
-
-    this.absenceForm.get('dateOfAbsence')?.valueChanges.subscribe((date) => {
-      if (date && this.scheduleData.length) {
-        this.updateSubjectsForDate(date);
-      } else {
-        this.filteredSubjects = [];
-        this.absenceForm.get('subjectId')?.setValue(null);
+      const klassId = this.data?.klassId;
+      if (klassId) {
+        this.scheduleData = await this.scheduleService.getScheduleByKlassId(
+          klassId
+        );
       }
-    });
+
+      this.absenceForm.get('dateOfAbsence')?.valueChanges.subscribe((date) => {
+        if (date && this.scheduleData.length) {
+          this.updateSubjectsForDate(date);
+        } else {
+          this.filteredSubjects = [];
+          this.absenceForm.get('subjectId')?.setValue(null);
+        }
+      });
+    }
   }
 
   updateSubjectsForDate(date: Date) {
@@ -69,7 +75,6 @@ export class AbsenceDialogComponent implements OnInit {
     );
     this.filteredSubjects = scheduleForDay.map((entry) => entry.subject);
 
-    // reset subject selection when date changes
     this.absenceForm.get('subjectId')?.setValue(null);
   }
 
@@ -77,21 +82,18 @@ export class AbsenceDialogComponent implements OnInit {
     const klassId = this.data?.klassId;
     if (!klassId) return;
 
-    let studentIds: number[] = []; // 🔹 declare outside
+    let studentIds: number[] = [];
 
     this.studentService
       .getStudentIdsByKlassId(klassId)
       .pipe(
         switchMap((ids: number[]) => {
-          studentIds = ids; // 🔹 store here for use later
+          studentIds = ids;
           if (!ids.length) return of([]);
           const userCalls = ids.map((id) =>
-            this.studentService.getStudentUserById(id).pipe(
-              catchError((err) => {
-                console.error(`Failed to load user for student ID ${id}`, err);
-                return of(null);
-              })
-            )
+            this.studentService
+              .getStudentUserById(id)
+              .pipe(catchError(() => of(null)))
           );
           return forkJoin(userCalls);
         })
@@ -100,7 +102,7 @@ export class AbsenceDialogComponent implements OnInit {
         next: (users) => {
           this.students = users
             .map((user, index) => {
-              const studentId = studentIds[index]; // 🔹 use stored array
+              const studentId = studentIds[index];
               if (!user) return null;
               return {
                 id: studentId,
@@ -112,9 +114,6 @@ export class AbsenceDialogComponent implements OnInit {
               (s): s is { id: number; firstName: string; lastName: string } =>
                 !!s
             );
-        },
-        error: (err) => {
-          console.error('Failed to load student users', err);
         },
       });
   }
@@ -130,22 +129,20 @@ export class AbsenceDialogComponent implements OnInit {
       (entry) => entry.klass.id === selectedKlassId
     );
 
-    const scheduleForDay = scheduleForKlass.filter(
+    return scheduleForKlass.filter(
       (entry) => entry.dayOfTheWeek === dayOfWeekBg
     );
-
-    return scheduleForDay;
   }
 
   dayOfWeekToBulgarian(date: Date): string {
     const daysBg = [
-      'Неделя', // Sunday
-      'Понеделник', // Monday
-      'Вторник', // Tuesday
-      'Сряда', // Wednesday
-      'Четвъртък', // Thursday
-      'Петък', // Friday
-      'Събота', // Saturday
+      'Неделя',
+      'Понеделник',
+      'Вторник',
+      'Сряда',
+      'Четвъртък',
+      'Петък',
+      'Събота',
     ];
     return daysBg[date.getDay()];
   }
@@ -153,12 +150,29 @@ export class AbsenceDialogComponent implements OnInit {
   disableWeekends = (d: Date | null): boolean => {
     if (!d) return false;
     const day = d.getDay();
-    // Sunday = 0, Saturday = 6
     return day !== 0 && day !== 6;
   };
 
   onSubmit(): void {
-    if (this.absenceForm.valid) {
+    if (!this.absenceForm.valid) return;
+
+    if (this.isEditMode) {
+      const formData = this.absenceForm.value;
+      const absenceId = this.data.absence.id;
+
+      const payload = {
+        absenceState: formData.absenceState,
+        absenceType: formData.absenceType,
+      };
+
+      this.absenceService.updateAbsence(absenceId, payload).subscribe({
+        next: () => this.dialogRef.close(true),
+        error: (err) => {
+          console.error('Failed to update absence', err);
+          alert('Failed to update absence');
+        },
+      });
+    } else {
       const formData = this.absenceForm.value;
 
       const selectedSubjectId = formData.subjectId;

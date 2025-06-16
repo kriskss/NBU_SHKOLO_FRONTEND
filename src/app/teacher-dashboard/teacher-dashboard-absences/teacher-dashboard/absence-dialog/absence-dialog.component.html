@@ -1,74 +1,88 @@
-<h2 mat-dialog-title>Add Absence</h2>
-<form [formGroup]="absenceForm" (ngSubmit)="onSubmit()">
-  <mat-dialog-content>
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Student</mat-label>
-      <mat-select formControlName="studentId" required>
-        <mat-option *ngFor="let student of students" [value]="student.id">
-          {{ student.firstName }} {{ student.lastName }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+<mat-dialog-content>
+  <form [formGroup]="absenceForm" (ngSubmit)="onSubmit()">
+    <!-- ADD mode: full fields -->
+    <ng-container *ngIf="!isEditMode">
+      <mat-form-field appearance="fill">
+        <mat-label>Student</mat-label>
+        <mat-select formControlName="studentId" required>
+          <mat-option *ngFor="let student of students" [value]="student.id">
+            {{ student.firstName }} {{ student.lastName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Date of Absence</mat-label>
-      <input
-        matInput
-        [matDatepicker]="picker"
-        [matDatepickerFilter]="disableWeekends"
-        formControlName="dateOfAbsence"
-        required
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Date of Absence</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [matDatepickerFilter]="disableWeekends"
+          formControlName="dateOfAbsence"
+          required
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" *ngIf="filteredSubjects.length > 0">
-      <mat-label>Subject</mat-label>
-      <mat-select formControlName="subjectId" required>
-        <mat-option
-          *ngFor="let subject of filteredSubjects"
-          [value]="subject.id"
-        >
-          {{ subject.title }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field appearance="fill" *ngIf="filteredSubjects.length > 0">
+        <mat-label>Subject</mat-label>
+        <mat-select formControlName="subjectId" required>
+          <mat-option
+            *ngFor="let subject of filteredSubjects"
+            [value]="subject.id"
+          >
+            {{ subject.title }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <div
-      *ngIf="
-        filteredSubjects.length === 0 && absenceForm.get('dateOfAbsence')?.value
-      "
-    >
-      No subjects scheduled for this date.
-    </div>
+      <mat-form-field appearance="fill">
+        <mat-label>Absence Type</mat-label>
+        <mat-select formControlName="absenceType" required>
+          <mat-option value="HALF">Половин/Закъснение</mat-option>
+          <mat-option value="FULL">Цяло</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Absence Type</mat-label>
-      <mat-select formControlName="absenceType" required>
-        <mat-option value="FULL">Full</mat-option>
-        <mat-option value="HALF">Half</mat-option>
-      </mat-select>
-    </mat-form-field>
+      <mat-form-field appearance="fill">
+        <mat-label>Absence State</mat-label>
+        <mat-select formControlName="absenceState" required>
+          <mat-option value="UNEXCUSED">Неизвинено</mat-option>
+          <mat-option value="EXCUSED">Извинено</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Absence State</mat-label>
-      <mat-select formControlName="absenceState" required>
-        <mat-option value="UNEXCUSED">Unexcused</mat-option>
-        <mat-option value="EXCUSED">Excused</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </mat-dialog-content>
+    <!-- EDIT mode: only absenceType and absenceState -->
+    <ng-container *ngIf="isEditMode">
+      <mat-form-field appearance="fill">
+        <mat-label>Absence Type</mat-label>
+        <mat-select formControlName="absenceType" required>
+          <mat-option value="HALF">Половин/Закъснение</mat-option>
+          <mat-option value="FULL">Цяло</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button
-      mat-flat-button
-      color="primary"
-      type="submit"
-      [disabled]="absenceForm.invalid"
-    >
-      Add
-    </button>
-  </mat-dialog-actions>
-</form>
+      <mat-form-field appearance="fill">
+        <mat-label>Absence State</mat-label>
+        <mat-select formControlName="absenceState" required>
+          <mat-option value="UNEXCUSED">Неизвинено</mat-option>
+          <mat-option value="EXCUSED">Извинено</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+
+    <!-- KEEP YOUR ORIGINAL BUTTONS EXACTLY -->
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Cancel</button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="absenceForm.invalid"
+      >
+        {{ isEditMode ? "Update" : "Add" }}
+      </button>
+    </mat-dialog-actions>
+  </form>
+</mat-dialog-content>
