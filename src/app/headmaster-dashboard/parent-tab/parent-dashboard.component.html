@@ -1,0 +1,46 @@
+<div class="parents-tab">
+  <h2>Родители в училището</h2>
+  <div class="filter-bar">
+    <label for="klassFilter">Филтрирай по клас:</label>
+    <select
+      id="klassFilter"
+      [(ngModel)]="selectedKlass"
+      (change)="applyFilter()"
+    >
+      <option value="all">Всички</option>
+      <option *ngFor="let klass of klasses" [value]="klass">{{ klass }}</option>
+    </select>
+  </div>
+  <table
+    class="parents-table"
+    *ngIf="filteredParents.length > 0; else noParents"
+  >
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Име</th>
+        <th>Имейл</th>
+        <th>Телефон</th>
+        <th>Ученици</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let parent of filteredParents; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ parent.user.firstName }} {{ parent.user.lastName }}</td>
+        <td>{{ parent.user.email }}</td>
+        <td>{{ parent.user.phoneNumber }}</td>
+        <td>
+          <span *ngFor="let student of parent.students; let j = index">
+            {{ getStudentName(student.id) }}
+            <span *ngIf="j < parent.students.length - 1">, </span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <ng-template #noParents>
+    <p>Няма родители за показване.</p>
+  </ng-template>
+</div>

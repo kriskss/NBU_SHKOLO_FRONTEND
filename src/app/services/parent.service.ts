@@ -2,6 +2,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
+import { Parent } from '../models/parent.model';
 
 @Injectable({
   providedIn: 'root',
@@ -59,5 +60,20 @@ export class ParentService {
     return firstValueFrom(
       this.http.get<number>(`${this.apiUrl}/getParentId/${userId}`, { headers })
     );
+  }
+
+  getParentsBySchoolId(schoolId: number): Observable<Parent[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<Parent[]>(`${this.apiUrl}/by-school/${schoolId}`, {
+      headers,
+    });
   }
 }

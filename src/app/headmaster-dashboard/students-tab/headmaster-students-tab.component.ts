@@ -40,7 +40,7 @@ export class HeadmasterStudentsTabComponent implements OnInit {
     try {
       const user = this.userService.getUser();
       if (!user) {
-        console.error('User not found in userService');
+        // console.error('User not found in userService');
         return; // Or handle redirect/login
       }
       const headmasterId = await firstValueFrom(
@@ -66,7 +66,7 @@ export class HeadmasterStudentsTabComponent implements OnInit {
         );
         this.students.push(user);
       }
-      console.log(this.students);
+      // console.log(this.students);
     } catch (error) {
       console.error('Error loading students:', error);
     }

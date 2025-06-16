@@ -52,6 +52,7 @@ import { ScheduleParentDashboardComponent } from './parent-dashboard/schedule-pa
 import { HeadmasterDashboardComponent } from './headmaster-dashboard/headmaster-dashboard.component';
 import { HeadmasterStudentsTabComponent } from './headmaster-dashboard/students-tab/headmaster-students-tab.component';
 import { HeadmasterTeachersTabComponent } from './headmaster-dashboard/teachers-tab/headmaster-teachers-tab.component';
+import { HeadmasterParentTabComponent } from './headmaster-dashboard/parent-tab/parent-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { HeadmasterTeachersTabComponent } from './headmaster-dashboard/teachers-
     HeadmasterDashboardComponent,
     HeadmasterStudentsTabComponent,
     HeadmasterTeachersTabComponent,
+    HeadmasterParentTabComponent,
   ],
   bootstrap: [AppComponent],
   imports: [
