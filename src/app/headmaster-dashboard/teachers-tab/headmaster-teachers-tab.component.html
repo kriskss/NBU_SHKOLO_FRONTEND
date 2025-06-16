@@ -1,74 +1,80 @@
-<div class="filter-bar">
-  <label for="nameFilter">Търси по име:</label>
-  <input
-    id="nameFilter"
-    type="text"
-    [(ngModel)]="searchText"
-    (input)="applyFilter()"
-    placeholder="Въведи име..."
-  />
+<div class="parents-tab">
+  <h2>Учители в училището</h2>
+  <div class="filter-bar">
+    <label for="nameFilter">Търси по име:</label>
+    <input
+      id="nameFilter"
+      type="text"
+      [(ngModel)]="searchText"
+      (input)="applyFilter()"
+      placeholder="Въведи име..."
+    />
 
-  <label for="subjectFilter">Филтрирай по предмет:</label>
-  <select
-    id="subjectFilter"
-    [(ngModel)]="selectedSubjectId"
-    (change)="applyFilter()"
+    <label for="subjectFilter">Филтрирай по предмет:</label>
+    <select
+      id="subjectFilter"
+      [(ngModel)]="selectedSubjectId"
+      (change)="applyFilter()"
+    >
+      <option [ngValue]="'all'">Всички</option>
+      <option *ngFor="let subject of subjects" [ngValue]="subject.id">
+        {{ subject.title }}
+      </option>
+    </select>
+
+    <label for="klassFilter">Филтрирай по клас:</label>
+    <select
+      id="klassFilter"
+      [(ngModel)]="selectedKlassId"
+      (change)="applyFilter()"
+    >
+      <option [ngValue]="'all'">Всички</option>
+      <option *ngFor="let klass of klasses" [ngValue]="klass.id">
+        {{ klass.name }}
+      </option>
+    </select>
+  </div>
+
+  <table
+    class="teachers-table"
+    *ngIf="filteredTeachers.length > 0; else noTeachers"
   >
-    <option [ngValue]="'all'">Всички</option>
-    <option *ngFor="let subject of subjects" [ngValue]="subject.id">
-      {{ subject.title }}
-    </option>
-  </select>
-
-  <label for="klassFilter">Филтрирай по клас:</label>
-  <select
-    id="klassFilter"
-    [(ngModel)]="selectedKlassId"
-    (change)="applyFilter()"
-  >
-    <option [ngValue]="'all'">Всички</option>
-    <option *ngFor="let klass of klasses" [ngValue]="klass.id">
-      {{ klass.name }}
-    </option>
-  </select>
-</div>
-
-<table
-  class="teachers-table"
-  *ngIf="filteredTeachers.length > 0; else noTeachers"
->
-  <thead>
-    <tr>
-      <th>#</th>
-      <th>Име</th>
-      <th>Предмети</th>
-      <th>Класове</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let teacher of filteredTeachers; let i = index">
-      <td>{{ i + 1 }}</td>
-      <td>{{ teacher.user.firstName }} {{ teacher.user.lastName }}</td>
-      <td>
-        <span *ngFor="let subject of teacher.subjects; let j = index">
-          {{ subject.title
-          }}<span *ngIf="j < teacher.subjects.length - 1">, </span>
-        </span>
-      </td>
-      <td>
-        <span
-          *ngFor="let klass of getKlassesForTeacher(teacher.id); let k = index"
-        >
-          {{ klass.name
-          }}<span *ngIf="k < getKlassesForTeacher(teacher.id).length - 1"
-            >,
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Име</th>
+        <th>Предмети</th>
+        <th>Класове</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let teacher of filteredTeachers; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ teacher.user.firstName }} {{ teacher.user.lastName }}</td>
+        <td>
+          <span *ngFor="let subject of teacher.subjects; let j = index">
+            {{ subject.title
+            }}<span *ngIf="j < teacher.subjects.length - 1">, </span>
           </span>
-        </span>
-      </td>
-    </tr>
-  </tbody>
-</table>
+        </td>
+        <td>
+          <span
+            *ngFor="
+              let klass of getKlassesForTeacher(teacher.id);
+              let k = index
+            "
+          >
+            {{ klass.name
+            }}<span *ngIf="k < getKlassesForTeacher(teacher.id).length - 1"
+              >,
+            </span>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-<ng-template #noTeachers>
-  <p>Няма учители за показване.</p>
-</ng-template>
+  <ng-template #noTeachers>
+    <p>Няма учители за показване.</p>
+  </ng-template>
+</div>

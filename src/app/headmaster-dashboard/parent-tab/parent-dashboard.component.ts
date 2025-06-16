@@ -18,6 +18,7 @@ export class HeadmasterParentTabComponent implements OnInit {
   selectedKlass: string = 'all';
   klasses: string[] = [];
   filteredParents: Parent[] = [];
+  searchText: string = ''; // <-- added for name filter
 
   constructor(
     private parentService: ParentService,
@@ -35,7 +36,6 @@ export class HeadmasterParentTabComponent implements OnInit {
     try {
       const user = this.userService.getUser();
       if (!user) {
-        // console.error('User not found');
         return;
       }
 
@@ -99,14 +99,25 @@ export class HeadmasterParentTabComponent implements OnInit {
   }
 
   applyFilter(): void {
-    if (this.selectedKlass === 'all') {
-      this.filteredParents = this.parents;
-    } else {
-      this.filteredParents = this.parents.filter((parent) =>
+    const searchLower = this.searchText.trim().toLowerCase();
+
+    this.filteredParents = this.parents.filter((parent) => {
+      const klassMatch =
+        this.selectedKlass === 'all' ||
         parent.students.some(
           (student) => student.klass?.name === this.selectedKlass
-        )
-      );
-    }
+        );
+
+      const fullName =
+        `${parent.user.firstName} ${parent.user.lastName}`.toLowerCase();
+      const email = parent.user.email.toLowerCase();
+
+      const nameOrEmailMatch =
+        !searchLower ||
+        fullName.includes(searchLower) ||
+        email.includes(searchLower);
+
+      return klassMatch && nameOrEmailMatch;
+    });
   }
 }

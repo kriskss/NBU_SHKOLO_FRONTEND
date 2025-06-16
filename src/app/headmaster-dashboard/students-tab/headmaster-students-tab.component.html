@@ -1,6 +1,33 @@
 <div class="students-tab">
   <h2>Ученици в училището</h2>
-  <table class="students-table" *ngIf="students.length > 0; else noStudents">
+
+  <div class="filter-bar">
+    <label for="searchName">Търси по име:</label>
+    <input
+      id="searchName"
+      type="text"
+      [(ngModel)]="searchName"
+      (input)="applyFilter()"
+      placeholder="Въведи име..."
+    />
+
+    <label for="klassFilter">Филтрирай по клас:</label>
+    <select
+      id="klassFilter"
+      [(ngModel)]="selectedKlass"
+      (change)="applyFilter()"
+    >
+      <option value="all">Всички</option>
+      <option *ngFor="let klass of klasses" [value]="klass.id">
+        {{ klass.name }}
+      </option>
+    </select>
+  </div>
+
+  <table
+    class="students-table"
+    *ngIf="filteredStudentsWithKlass.length > 0; else noStudents"
+  >
     <thead>
       <tr>
         <th>#</th>
@@ -9,13 +36,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let student of students; let i = index">
+      <tr *ngFor="let swk of filteredStudentsWithKlass; let i = index">
         <td>{{ i + 1 }}</td>
-        <td>{{ student.firstName }} {{ student.lastName }}</td>
-        <td>{{ klassStudents[i].klass.name }}</td>
+        <td>{{ swk.user.firstName }} {{ swk.user.lastName }}</td>
+        <td>{{ swk.klass?.name || "-" }}</td>
       </tr>
     </tbody>
   </table>
+
   <ng-template #noStudents>
     <p>Няма ученици за показване.</p>
   </ng-template>
