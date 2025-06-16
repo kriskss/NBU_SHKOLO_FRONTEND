@@ -136,4 +136,18 @@ export class TeacherService {
       headers,
     });
   }
+  getKlassesByTeacherId(teacherId: number): Observable<Klass[]> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+
+    return this.http.get<Klass[]>(`${this.apiUrl}/${teacherId}/klasses`, {
+      headers,
+    });
+  }
 }
