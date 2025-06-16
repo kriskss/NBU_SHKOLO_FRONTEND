@@ -113,4 +113,19 @@ export class ScheduleService {
       })
     );
   }
+
+  editScheduleEntry(entry: any): Promise<any> {
+    let token = '';
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('authToken') || '';
+    }
+    const headers = new HttpHeaders({
+      Authorization: token ? `Bearer ${token}` : '',
+    });
+    return firstValueFrom(
+      this.http.patch(`${this.scheduleUrl}/edit/${entry.id}`, entry, {
+        headers,
+      })
+    );
+  }
 }

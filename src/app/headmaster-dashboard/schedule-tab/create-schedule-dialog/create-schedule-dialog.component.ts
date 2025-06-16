@@ -21,6 +21,7 @@ export interface CreateScheduleDialogData {
   terms: Term[];
   selectedKlassId: number | null;
   selectedTermId: number | null;
+  existingSchedule?: any[];
 }
 
 @Component({
@@ -138,12 +139,18 @@ export class CreateScheduleDialogComponent implements OnInit {
 
     for (let period of this.periods) {
       for (let day of this.daysOfWeek) {
+        const existing = this.data.existingSchedule?.find(
+          (entry) =>
+            entry.dayOfTheWeek === day && entry.numberOfPeriod === period
+        );
+
         scheduleArray.push(
           this.fb.group({
+            id: [existing?.id || null],
             dayOfTheWeek: [day],
             numberOfPeriod: [period],
-            subjectId: [null, Validators.required],
-            teacherId: [null, Validators.required],
+            subjectId: [existing?.subjectId || null, Validators.required],
+            teacherId: [existing?.teacherId || null, Validators.required],
           })
         );
       }
@@ -168,12 +175,14 @@ export class CreateScheduleDialogComponent implements OnInit {
           ?.valueChanges.subscribe((subjectId: number | null) => {
             const filtered = this.filterTeachersBySubject(subjectId);
             this.filteredTeachersMap.set(index, filtered);
-            console.log(this.filteredTeachersMap);
-
             group.get('teacherId')?.setValue(null);
           });
 
-        this.filteredTeachersMap.set(index, this.teachers);
+        const initialSubjectId = group.get('subjectId')?.value;
+        this.filteredTeachersMap.set(
+          index,
+          this.filterTeachersBySubject(initialSubjectId)
+        );
       }
     );
   }
@@ -208,6 +217,7 @@ export class CreateScheduleDialogComponent implements OnInit {
     const entries = this.scheduleEntries.controls.map((group) => {
       const val = group.value;
       return {
+        id: val.id,
         dayOfTheWeek: val.dayOfTheWeek,
         numberOfPeriod: val.numberOfPeriod,
         klassId: this.selectedKlassId!,
@@ -223,7 +233,11 @@ export class CreateScheduleDialogComponent implements OnInit {
 
     try {
       for (const entry of validEntries) {
-        await this.scheduleService.addScheduleEntry(entry);
+        if (entry.id) {
+          await this.scheduleService.editScheduleEntry(entry);
+        } else {
+          await this.scheduleService.addScheduleEntry(entry);
+        }
       }
 
       this.dialogRef.close(true);

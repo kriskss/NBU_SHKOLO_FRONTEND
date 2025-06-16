@@ -37,6 +37,17 @@
     </button>
   </div> -->
 
+  <div style="margin: 15px 0">
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="openEditScheduleDialog()"
+      [disabled]="!filteredSchedule.length"
+    >
+      Редактирай график
+    </button>
+  </div>
+
   <table
     class="schedule-table"
     *ngIf="filteredSchedule.length > 0; else noSchedule"

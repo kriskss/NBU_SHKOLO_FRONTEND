@@ -186,4 +186,29 @@ export class HeadmasterScheduleTabComponent implements OnInit {
       }
     });
   }
+
+  openEditScheduleDialog(): void {
+    if (!this.filteredSchedule.length) return;
+
+    const dialogRef = this.dialog.open(CreateScheduleDialogComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      data: {
+        klasses: this.klasses,
+        terms: this.availableTerms,
+        selectedKlassId: this.selectedKlassId,
+        selectedTermId: this.selectedTermId,
+        scheduleData: this.filteredSchedule, // Pass existing schedule for editing
+        isEditMode: true,
+      } as CreateScheduleDialogData,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.selectedKlassId = result.klassId;
+        this.selectedTermId = result.termId;
+        this.loadSchedule(this.selectedKlassId!, this.selectedTermId!);
+      }
+    });
+  }
 }
