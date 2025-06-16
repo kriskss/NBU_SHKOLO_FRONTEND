@@ -51,7 +51,7 @@ export class HeadmasterTeachersTabComponent implements OnInit {
         this.teacherService.getTeachersBySchoolId(schoolData.id)
       );
 
-      await this.loadTeacherKlasses();
+      await this.loadTeacherKlasses(schoolData.id);
 
       this.extractSubjects();
       this.extractKlasses();
@@ -61,13 +61,26 @@ export class HeadmasterTeachersTabComponent implements OnInit {
     }
   }
 
-  async loadTeacherKlasses() {
+  async loadTeacherKlasses(currentSchoolId: number) {
     for (const teacher of this.teachers) {
       try {
-        const klasses = await firstValueFrom(
+        const rawKlasses = await firstValueFrom(
           this.teacherService.getKlassesByTeacherId(teacher.id)
         );
-        this.klassesMap.set(teacher.id, klasses);
+
+        // Convert raw klasses with schoolId into proper Klass instances
+        const klassesInThisSchool: Klass[] = rawKlasses
+          .filter((klass: any) => klass.schoolId === currentSchoolId)
+          .map(
+            (klass: any) =>
+              new Klass(klass.id, klass.name, {
+                id: klass.schoolId,
+                name: '',
+                address: '',
+              })
+          );
+
+        this.klassesMap.set(teacher.id, klassesInThisSchool);
       } catch (e) {
         console.error(`Error fetching klasses for teacher ${teacher.id}`, e);
       }
@@ -113,11 +126,12 @@ export class HeadmasterTeachersTabComponent implements OnInit {
       );
     }
 
-    // Filter by klass
+    // Filter by klass using klassesMap
     if (this.selectedKlassId !== 'all') {
-      filtered = filtered.filter((teacher) =>
-        teacher.klasses.some((k) => k.id === this.selectedKlassId)
-      );
+      filtered = filtered.filter((teacher) => {
+        const klasses = this.klassesMap.get(teacher.id) || [];
+        return klasses.some((k) => k.id === this.selectedKlassId);
+      });
     }
 
     // Filter by name search (case-insensitive)
@@ -136,7 +150,7 @@ export class HeadmasterTeachersTabComponent implements OnInit {
     this.filteredTeachers = filtered;
   }
 
-  getKlassesForTeacher(teacherId: number) {
+  getKlassesForTeacher(teacherId: number): Klass[] {
     return this.klassesMap.get(teacherId) || [];
   }
 }

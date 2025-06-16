@@ -1,5 +1,6 @@
 <div class="parents-tab">
   <h2>Учители в училището</h2>
+
   <div class="filter-bar">
     <label for="nameFilter">Търси по име:</label>
     <input
@@ -58,17 +59,11 @@
           </span>
         </td>
         <td>
-          <span
-            *ngFor="
-              let klass of getKlassesForTeacher(teacher.id);
-              let k = index
-            "
-          >
-            {{ klass.name
-            }}<span *ngIf="k < getKlassesForTeacher(teacher.id).length - 1"
-              >,
+          <ng-container *ngIf="getKlassesForTeacher(teacher.id) as klasses">
+            <span *ngFor="let klass of klasses; let k = index">
+              {{ klass.name }}<span *ngIf="k < klasses.length - 1">, </span>
             </span>
-          </span>
+          </ng-container>
         </td>
       </tr>
     </tbody>
